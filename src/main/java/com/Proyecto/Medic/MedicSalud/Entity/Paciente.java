@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "pacientes")
@@ -22,4 +24,9 @@ public class Paciente {
     @OneToOne
     @JoinColumn(name = "dni_usuario",referencedColumnName = "dni",insertable = false,unique = false)
     private Usuario usuario;
+
+
+    @OneToMany(mappedBy = "paciente")
+    private List<Historial> historialMedico;
+
 }
