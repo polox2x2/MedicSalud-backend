@@ -4,6 +4,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,11 +18,12 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Usuario {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long Id;
+        private Long id;
         @Column(name = "nombre",length = 50, nullable = true )
         private String nombre;
         @Column(name = "apellido",length = 50, nullable = true )
@@ -46,6 +48,8 @@ public class Usuario {
         private String direccion;
 
         private LocalDateTime fechaCreacion;
+
+        private boolean estado = true;
 
 
         //Vinculacion con otra tabla
