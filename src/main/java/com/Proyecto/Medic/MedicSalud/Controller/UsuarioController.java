@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Controller;
 
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioRequestDTO;
 import com.Proyecto.Medic.MedicSalud.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> crear(@RequestBody UsuarioDTO usuarioDTO) {
-        return ResponseEntity.ok(usuarioService.crear(usuarioDTO));
+    public ResponseEntity<UsuarioDTO> crear(@RequestBody UsuarioRequestDTO requestDTO) {
+        return ResponseEntity.ok(usuarioService.crear(requestDTO));
     }
 
     @PutMapping("/{id}")

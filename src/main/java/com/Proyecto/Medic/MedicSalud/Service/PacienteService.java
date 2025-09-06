@@ -16,6 +16,7 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
 
+
     public List<PacienteDTO> listarTodos() {
         return pacienteRepository.findAll()
                 .stream()

@@ -22,6 +22,8 @@ public class Medico {
     @Column(nullable = false, length = 100)
     private String especialidad;
 
+    @Column(nullable = false)
+    private Boolean estado = true;
 
     //apartado para juntar las tablas
 
