@@ -28,9 +28,13 @@ public class Usuario {
         private String nombre;
         @Column(name = "apellido",length = 50, nullable = true )
         private String apellido;
-        @Column(name = "dni",unique = true,length = 8)
-        @NotBlank(message = "El dni es obligatorio")
+
+        @Column(name = "dni", unique = true, nullable = false)
+        @NotNull(message = "El DNI es obligatorio")
+        @Min(value = 10000000, message = "El DNI debe tener 8 dígitos")
+        @Max(value = 99999999, message = "El DNI debe tener 8 dígitos")
         private Integer dni;
+
         @NotNull
         @NotBlank (message = "El email es obligatorio")
         @Email (message = "el formato no coincide")
@@ -49,6 +53,7 @@ public class Usuario {
 
         private LocalDateTime fechaCreacion;
 
+        @Column(nullable = false)
         private boolean estado = true;
 
 
@@ -56,10 +61,11 @@ public class Usuario {
 
         //Relación con Roles
 
-        @ManyToMany(fetch = FetchType.EAGER)
-        @JoinTable (name = "Rol_Usuario",
+        @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+        @JoinTable(
+                name = "Rol_Usuario",
                 joinColumns = @JoinColumn(name = "id_usuarios"),
-                inverseJoinColumns = @JoinColumn (name = "id_rol")
+                inverseJoinColumns = @JoinColumn(name = "id_rol")
         )
         private Set<Rol> roles = new HashSet<>();
 
