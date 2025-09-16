@@ -22,6 +22,15 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
 
+
+
+
+    public List<UsuarioRequestDTO> listaUsuario(){
+        return usuarioRepository.findAll().stream()
+                .map(UsuarioMappers::ListaUsuarioDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<UsuarioDTO> listarActivos() {
         return usuarioRepository.findByEstadoTrue()
                 .stream()

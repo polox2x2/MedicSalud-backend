@@ -14,6 +14,7 @@ public class PacienteMapper {
         dto.setId(paciente.getId());
         dto.setNombreUsuario(paciente.getNombreUsuario());
         dto.setDniUsuario(paciente.getUsuario().getDni());
+        dto.setEstado(paciente.getEstado());
         return dto;
     }
 

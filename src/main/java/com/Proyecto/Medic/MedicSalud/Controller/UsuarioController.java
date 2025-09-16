@@ -17,6 +17,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+
+    @GetMapping("/todos")
+    public ResponseEntity<List<UsuarioRequestDTO>>listaTotal (){
+        return ResponseEntity.ok(usuarioService.listaUsuario());
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> listar() {
         return ResponseEntity.ok(usuarioService.listarActivos());

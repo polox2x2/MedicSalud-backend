@@ -13,4 +13,6 @@ public class PacienteDTO {
     private Long id;
     private String nombreUsuario;
     private Integer dniUsuario;
+    private Boolean estado;
+
 }

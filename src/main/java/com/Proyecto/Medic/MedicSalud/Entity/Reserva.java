@@ -27,7 +27,7 @@ public class Reserva {
     private Date horaCita;
 
     @Column(nullable = false)
-    private Boolean estadoCita;
+    private Boolean estadoCita= true;
 
     @ManyToOne
     @JoinColumn(name = "id_medico")
