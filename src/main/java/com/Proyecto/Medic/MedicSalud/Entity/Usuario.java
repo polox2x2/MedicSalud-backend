@@ -60,8 +60,11 @@ public class Usuario {
         private boolean estado = true;
 
 
-        //Vinculacion con otra tabla
 
+
+
+
+        //Vinculacion con otra tabla
         //Relación con Roles
 
         @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
