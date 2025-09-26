@@ -22,9 +22,8 @@ public class Paciente {
     private String nombreUsuario;
 
     @OneToOne
-    @JoinColumn(name = "dni_usuario",referencedColumnName = "dni",insertable = false,unique = false)
+    @JoinColumn(name = "usuario_id",insertable = false,unique = true)
     private Usuario usuario;
-
 
     @OneToMany(mappedBy = "paciente")
     private List<Historial> historialMedico;
