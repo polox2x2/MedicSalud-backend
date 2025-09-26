@@ -26,7 +26,7 @@ public class Medico {
     //apartado para juntar las tablas
 
     @OneToOne
-    @JoinColumn(name = "dni_usuario",referencedColumnName = "dni")
+    @JoinColumn(name = "usuario_id",nullable = false,unique = true)
     private Usuario usuario;
 
     @ManyToOne
