@@ -1,10 +1,17 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
+import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
+import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
+import com.Proyecto.Medic.MedicSalud.Repository.RolRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +19,51 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final RolRepository rolRepository;
+    private final PacienteRepository pacienteRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public Usuario registrarUsuarioComoPaciente (RegistroUsuarioDTO dto){
+        //validacion de correo y dni
+        if (usuarioRepository.existsByEmail(dto.getEmail())){
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())){
+            throw new IllegalArgumentException("El DNI ya está registrado");
+        }
+        //Datos Mapeados
+        Usuario usuario = UsuarioMappers.registerUsuarioDTO(dto);
+
+        //Encriptamos la clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+
+        //Agregamos el rol por defecto
+        Rol rolPaciente = rolRepository.findByNombre("PACIENTE")
+                .orElseThrow( () -> new RuntimeException("Falta crear el rol PACIENTE en la bd") );
+            usuario.getRoles().add(rolPaciente);
+
+            //Guardamos el usuario
+            usuario = usuarioRepository.save(usuario);
+
+
+            //Creamos a obj paciente
+            Paciente paciente = new Paciente();
+
+            //les damos los datos de usuario
+            paciente.setNombreUsuario(usuario.getNombre() + usuario.getApellido());
+            paciente.setUsuario(usuario);
+
+            //guardamos el usuario en paciente
+            pacienteRepository.save(paciente);
+
+        return usuario;
+
+    }
+
 
     public List<UsuarioDTO> listarActivos() {
         return usuarioRepository.findByEstadoTrue()
