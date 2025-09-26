@@ -15,7 +15,7 @@ public class RegistroUsuarioDTO {
     String nombre ;
     String apellido;
     Integer dni;
-    String correo;
+    String email;
     String clave;
     String telefono;
     String direccion;
