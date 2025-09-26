@@ -29,7 +29,9 @@ public class Usuario {
         @Column(name = "apellido",length = 50, nullable = true )
         private String apellido;
         @Column(name = "dni",unique = true,length = 8)
-        @NotBlank(message = "El dni es obligatorio")
+        @NotNull(message = "El dni es obligatorio")
+        @Min(value =10000000 ,message = "El DNI debe tene 8 digitos" )
+        @Max(value =99999999 ,message = "El DNI debe tener 8 digitos")
         private Integer dni;
         @NotNull
         @NotBlank (message = "El email es obligatorio")
