@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PacienteRepository extends JpaRepository<Paciente,Long> {
-    boolean existsByUsuario (Usuario usuario);
-    boolean existsByEmail(String emain);
-    boolean existsByDni (Integer dni);
+
 
 
 }
