@@ -101,5 +101,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-
+    public List<Usuario> buscarTodos() {
+        return usuarioRepository.findAll();
+    }
 }

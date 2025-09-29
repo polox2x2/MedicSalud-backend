@@ -20,6 +20,11 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    @GetMapping("/todos")
+    public ResponseEntity<List<Usuario>> listarTodo(){
+        return ResponseEntity.ok(usuarioService.buscarTodos());
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> listar() {
         return ResponseEntity.ok(usuarioService.listarActivos());

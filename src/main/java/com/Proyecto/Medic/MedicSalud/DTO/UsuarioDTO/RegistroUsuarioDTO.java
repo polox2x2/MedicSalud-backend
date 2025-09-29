@@ -20,5 +20,6 @@ public class RegistroUsuarioDTO {
     private  String clave;
     private  String telefono;
     private  String direccion;
+    private boolean estado;
     private LocalDate fechaNaciemiento;
 }

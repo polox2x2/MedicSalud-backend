@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -51,7 +52,7 @@ public class Usuario {
 
         private LocalDateTime fechaCreacion;
 
-        private boolean estado = true;
+        private Boolean estado = true;
 
 
         //Vinculacion con otra tabla
@@ -65,6 +66,7 @@ public class Usuario {
         )
 
         @Builder.Default
+        @JsonManagedReference  // Evita recursión
         private Set<Rol> roles = new HashSet<>();
 
 

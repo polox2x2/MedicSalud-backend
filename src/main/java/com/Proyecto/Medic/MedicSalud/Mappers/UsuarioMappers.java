@@ -14,7 +14,7 @@ public class UsuarioMappers {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .email(usuario.getEmail())
-                .estado(usuario.isEstado())
+                .estado(usuario.getEstado())
                 .build();
     }
 
@@ -40,5 +40,19 @@ public class UsuarioMappers {
                 .estado(true)
                 .build();
     }
+    public static RegistroUsuarioDTO listarUsuarioDTO (Usuario usuario){
+        return RegistroUsuarioDTO.builder()
+                .nombre(usuario.getNombre())
+                .apellido(usuario.getApellido())
+                .dni(usuario.getDni())
+                .email(usuario.getEmail())
+                .clave(usuario.getClave())
+                .direccion(usuario.getDireccion())
+                .telefono(usuario.getTelefono())
+                .estado(usuario.getEstado())
+                .build();
+    }
+
+
 }
 

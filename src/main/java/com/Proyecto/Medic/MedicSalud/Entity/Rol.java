@@ -1,5 +1,6 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Rol {
     //union con otra tabla
 
     @ManyToMany (mappedBy = "roles")
+    @JsonBackReference   // Ignora el "camino de vuelta"
     private Set<Usuario>usuarios = new HashSet<>();
 
 
