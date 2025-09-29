@@ -36,7 +36,7 @@ public class UsuarioMappers {
                 .clave(dto.getClave())
                 .direccion(dto.getDireccion())
                 .telefono(dto.getTelefono())
-                .fechaNacimiento(LocalDate.from(dto.getFechanaciemiento()))
+                .fechaNacimiento(dto.getFechaNaciemiento())
                 .estado(true)
                 .build();
     }

@@ -4,7 +4,7 @@ spring:
   application:
     name: MedicSalud
   datasource:
-    url: jdbc:mysql://localhost:3306/
+    url: jdbc:mysql://localhost:3306/clinica_db
 
     username: root
     password: root

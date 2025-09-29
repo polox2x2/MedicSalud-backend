@@ -38,7 +38,6 @@ public class UsuarioController {
     public ResponseEntity<?>crearUsuaroConPaciente (@RequestBody RegistroUsuarioDTO dto){
         Usuario usuario = usuarioService.registrarUsuarioComoPaciente(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "id",usuario.getId(),
                 "email",usuario.getEmail(),
                 "roles",usuario.getRoles(),
                 "pacienteCreado",true
