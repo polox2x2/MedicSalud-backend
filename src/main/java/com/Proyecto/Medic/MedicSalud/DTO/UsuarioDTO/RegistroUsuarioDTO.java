@@ -21,5 +21,5 @@ public class RegistroUsuarioDTO {
     private  String telefono;
     private  String direccion;
     private boolean estado;
-    private LocalDate fechaNaciemiento;
+    private LocalDate fechaNacimiento;
 }

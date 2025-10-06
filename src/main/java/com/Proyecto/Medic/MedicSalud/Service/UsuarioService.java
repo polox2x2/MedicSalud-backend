@@ -1,11 +1,15 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
+import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.RegistroMedicoDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
+import com.Proyecto.Medic.MedicSalud.Mappers.MedicoMapper;
 import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
+import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.RolRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
@@ -25,14 +29,24 @@ public class UsuarioService {
     private final RolRepository rolRepository;
     private final PacienteRepository pacienteRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MedicoRepository medicoRepository;
 
+    /**
+     * Importante :
+     *
+     * @Transactional -> controlar las transacciones con la base de datos, asegurando que un bloque de operaciones
+     * se ejecute como una unidad completa, o que todas se reviertan si algo falla.
+     */
+
+
+    // USUARIO-PACIENTE
     @Transactional
-    public Usuario registrarUsuarioComoPaciente (RegistroUsuarioDTO dto){
+    public Usuario registrarUsuarioComoPaciente(RegistroUsuarioDTO dto) {
         //validacion de correo y dni
-        if (usuarioRepository.existsByEmail(dto.getEmail())){
+        if (usuarioRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
-        if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())){
+        if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())) {
             throw new IllegalArgumentException("El DNI ya está registrado");
         }
         //Datos Mapeados
@@ -43,27 +57,68 @@ public class UsuarioService {
 
         //Agregamos el rol por defecto
         Rol rolPaciente = rolRepository.findByNombre("PACIENTE")
-                .orElseThrow( () -> new RuntimeException("Falta crear el rol PACIENTE en la bd") );
-            usuario.getRoles().add(rolPaciente);
+                .orElseThrow(() -> new RuntimeException("Falta crear el rol PACIENTE en la bd"));
+        usuario.getRoles().add(rolPaciente);
 
-            //Guardamos el usuario
-            usuario = usuarioRepository.save(usuario);
+        //Guardamos el usuario
+        usuario = usuarioRepository.save(usuario);
 
 
-            //Creamos a obj paciente
-            Paciente paciente = new Paciente();
+        //Creamos a obj paciente
+        Paciente paciente = new Paciente();
 
-            //les damos los datos de usuario
-            paciente.setNombreUsuario(usuario.getNombre() + usuario.getApellido());
-            paciente.setUsuario(usuario);
+        //les damos los datos de usuario
+        paciente.setNombreUsuario(usuario.getNombre() + usuario.getApellido());
+        paciente.setUsuario(usuario);
 
-            //guardamos el usuario en paciente
-            pacienteRepository.save(paciente);
+        //guardamos el usuario en paciente
+        pacienteRepository.save(paciente);
 
         return usuario;
 
     }
 
+    @Transactional
+    public Usuario registrarUsuarioComoMedico(RegistroUsuarioDTO dto) {
+        // validación de correo y dni
+        if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())) {
+            throw new IllegalArgumentException("El DNI ya está registrado");
+        }
+
+        // Datos mapeados
+        Usuario usuario = UsuarioMappers.registerUsuarioDTO(dto);
+
+
+        // Encriptamos la clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+
+
+        // Agregamos el rol por defecto MEDICO
+        Rol rolMedico = rolRepository.findByNombre("MEDICO")
+                .orElseThrow(() -> new RuntimeException("Falta crear el rol MEDICO en la bd"));
+        usuario.getRoles().add(rolMedico);
+
+
+        // Guardamos el usuario
+        usuario = usuarioRepository.save(usuario);
+
+
+        // Creamos obj medico
+        Medico medico = new Medico();
+        medico.setUsuario(usuario);
+
+
+        // Guardamos el médico
+        medicoRepository.save(medico);
+
+        return usuario;
+    }
+
+
+    //USUARIO
 
     public List<UsuarioDTO> listarActivos() {
         return usuarioRepository.findByEstadoTrue()

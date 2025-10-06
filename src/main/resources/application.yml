@@ -18,3 +18,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+springdoc:
+  api-docs:
+    path: /api-docs        # endpoint JSON/YAML de OpenAPI
+  swagger-ui:
+    path: /swagger         # ruta de la UI ( http://localhost:8080/swagger)
+    operationsSorter: method   # ordena endpoints por metodo (GET, POST, etc.)
+    tagsSorter: alpha          # ordena tags alfabéticamente
+    display-request-duration: true   # muestra tiempo de ejecución
+    doc-expansion: none       # none | list | full
