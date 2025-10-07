@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,14 +22,15 @@ public class Medico {
     private String nombreUsuario;
     @Column(nullable = false, length = 100)
     private String especialidad;
+    @Pattern(regexp = "\\d{9}", message = "el telefono debe tener 9 digitos")
+    private String telefono;
 
-    @Column(nullable = false)
     private Boolean estado = true;
 
     //apartado para juntar las tablas
 
     @OneToOne
-    @JoinColumn(name = "dni_usuario",referencedColumnName = "dni")
+    @JoinColumn(name = "usuario_id",nullable = false,unique = true)
     private Usuario usuario;
 
     @ManyToOne

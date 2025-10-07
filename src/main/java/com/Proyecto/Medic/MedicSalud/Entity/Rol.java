@@ -1,44 +1,33 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString(exclude = "usuarios") // evita bucles infinitos
+@NoArgsConstructor
 public class Rol {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String nombre;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY) // recomendable usar LAZY
-    @JsonIgnore
-    private Set<Usuario> usuarios = new HashSet<>();
 
-    // ✅ equals y hashCode SOLO con id
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Rol)) return false;
-        Rol rol = (Rol) o;
-        return Objects.equals(id, rol.id);
-    }
+    //union con otra tabla
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    @ManyToMany (mappedBy = "roles")
+    @JsonBackReference   // Ignora el "camino de vuelta"
+    private Set<Usuario>usuarios = new HashSet<>();
+
+
 }

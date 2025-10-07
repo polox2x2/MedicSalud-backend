@@ -4,6 +4,7 @@ import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 
 public class MedicoDTO {
 
+
     private Usuario usuario;
     private String especialidad;
 

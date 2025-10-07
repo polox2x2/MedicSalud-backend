@@ -1,12 +1,11 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,38 +14,35 @@ import java.util.Set;
 
 @Entity
 @Table (name = "usuarios")
-@Data
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) //  evita incluir colecciones
+@ToString(onlyExplicitlyIncluded = true)
 public class Usuario {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-
         @Column(name = "nombre",length = 50, nullable = true )
         private String nombre;
-
         @Column(name = "apellido",length = 50, nullable = true )
         private String apellido;
-
-        @Column(name = "dni", unique = true, nullable = false)
-        @NotNull(message = "El DNI es obligatorio")
-        @Min(value = 10000000, message = "El DNI debe tener 8 dígitos")
-        @Max(value = 99999999, message = "El DNI debe tener 8 dígitos")
+        @Column(name = "dni",unique = true,length = 8)
+        @NotNull(message = "El dni es obligatorio")
+        @Min(value =10000000 ,message = "El DNI debe tene 8 digitos" )
+        @Max(value =99999999 ,message = "El DNI debe tener 8 digitos")
         private Integer dni;
-
         @NotNull
         @NotBlank (message = "El email es obligatorio")
         @Email (message = "el formato no coincide")
         private String email;
-
-        @Size(max =16 , min = 8 , message = "La contraseña debe tener por lo menos 8 caracteres y un maximo de 16")
         @NotBlank(message = "la contraseña es obligatoria")
         private String clave;
 
         @Past(message = "La fecha de nacimiento debe ser en el pasado")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate fechaNacimiento;
 
         @Pattern(regexp = "\\d{9}", message = "el telefono debe tener 9 digitos")
@@ -56,23 +52,21 @@ public class Usuario {
 
         private LocalDateTime fechaCreacion;
 
-        @Column(nullable = false)
-        private boolean estado = true;
-
-
-
-
+        private Boolean estado = true;
 
 
         //Vinculacion con otra tabla
+
         //Relación con Roles
 
-        @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-        @JoinTable(
-                name = "Rol_Usuario",
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable (name = "Rol_Usuario",
                 joinColumns = @JoinColumn(name = "id_usuarios"),
-                inverseJoinColumns = @JoinColumn(name = "id_rol")
+                inverseJoinColumns = @JoinColumn (name = "id_rol")
         )
+
+        @Builder.Default
+        @JsonManagedReference  // Evita recursión
         private Set<Rol> roles = new HashSet<>();
 
 

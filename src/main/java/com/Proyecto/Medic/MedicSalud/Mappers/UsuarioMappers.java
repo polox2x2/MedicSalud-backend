@@ -1,24 +1,12 @@
 package com.Proyecto.Medic.MedicSalud.Mappers;
 
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
-import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioLoginDTO;
-import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioRequestDTO;
-import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 public class UsuarioMappers {
-
-
-    public static Usuario loginDTO(UsuarioLoginDTO dto) {
-        return Usuario.builder()
-                .email(dto.getEmail())
-                .clave(dto.getClave())
-                .build();
-    }
 
     public static UsuarioDTO toDTO(Usuario usuario) {
         return UsuarioDTO.builder()
@@ -26,10 +14,7 @@ public class UsuarioMappers {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .email(usuario.getEmail())
-                .estado(usuario.isEstado())
-                .roles(usuario.getRoles().stream()
-                        .map(Rol::getNombre)
-                        .collect(Collectors.toSet()))
+                .estado(usuario.getEstado())
                 .build();
     }
 
@@ -42,39 +27,32 @@ public class UsuarioMappers {
                 .estado(dto.isEstado())
                 .build();
     }
-    public static Usuario RequestiUsuarioDTO(UsuarioRequestDTO request, Set<Rol> roles) {
-        Usuario usuario = new Usuario();
-        usuario.setNombre(request.getNombre());
-        usuario.setApellido(request.getApellido());
-        usuario.setDni(request.getDni());
-        usuario.setEmail(request.getEmail());
-        usuario.setClave(request.getClave());
-        usuario.setFechaNacimiento(request.getFechaNacimiento());
-        usuario.setTelefono(request.getTelefono());
-        usuario.setDireccion(request.getDireccion());
-        usuario.setEstado(true); // por defecto activo
-        usuario.setFechaCreacion(LocalDateTime.now());
-        usuario.setRoles(roles);
-
-        return usuario;
+    public static Usuario registerUsuarioDTO (RegistroUsuarioDTO dto){
+        return Usuario.builder()
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .dni(dto.getDni())
+                .email(dto.getEmail())
+                .clave(dto.getClave())
+                .direccion(dto.getDireccion())
+                .telefono(dto.getTelefono())
+                .fechaNacimiento(dto.getFechaNacimiento())
+                .estado(true)
+                .build();
     }
-    public static UsuarioRequestDTO ListaUsuarioDTO (Usuario usuario){
-        return UsuarioRequestDTO.builder()
+    public static RegistroUsuarioDTO listarUsuarioDTO (Usuario usuario){
+        return RegistroUsuarioDTO.builder()
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .dni(usuario.getDni())
                 .email(usuario.getEmail())
+                .clave(usuario.getClave())
                 .direccion(usuario.getDireccion())
                 .telefono(usuario.getTelefono())
-                .fechaNacimiento(usuario.getFechaNacimiento())
-                .roles(usuario.getRoles()
-                        .stream()
-                        .map(Rol::getNombre)
-                        .collect(Collectors.toSet()))
-                .estado(usuario.isEstado())
+                .estado(usuario.getEstado())
                 .build();
-
     }
+
 
 }
 

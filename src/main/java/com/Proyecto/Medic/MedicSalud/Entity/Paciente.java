@@ -21,16 +21,11 @@ public class Paciente {
 
     private String nombreUsuario;
 
-    @Column(nullable = false)
-    private Boolean estado = true;
-
     @OneToOne
-    @JoinColumn(name = "dni_usuario", referencedColumnName = "dni")
+    @JoinColumn(name = "usuario_id",insertable = false,unique = true)
     private Usuario usuario;
 
     @OneToMany(mappedBy = "paciente")
     private List<Historial> historialMedico;
-
-
 
 }
