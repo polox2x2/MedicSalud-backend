@@ -1,13 +1,12 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
-import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.RegistroMedicoDTO;
+
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
-import com.Proyecto.Medic.MedicSalud.Mappers.MedicoMapper;
 import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
 import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
