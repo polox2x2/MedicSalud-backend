@@ -25,6 +25,8 @@ public class Paciente {
     @JoinColumn(name = "usuario_id",insertable = false,unique = true)
     private Usuario usuario;
 
+    private Boolean estado=true;
+
     @OneToMany(mappedBy = "paciente")
     private List<Historial> historialMedico;
 
