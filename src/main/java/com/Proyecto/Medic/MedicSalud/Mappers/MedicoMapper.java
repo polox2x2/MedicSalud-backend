@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Mappers;
 
 
+import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.MedicoRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.RegistroMedicoDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
@@ -13,6 +14,8 @@ public class MedicoMapper {
         }
         Medico medico = new Medico();
         medico.setUsuario(usuario);
+        medico.setEspecialidad(dto.getEspecialidad());
+        medico.setDni(dto.getDni());
         medico.setEstado(dto.getEstado());
         return medico;
     }
@@ -23,6 +26,16 @@ public class MedicoMapper {
         }
         return RegistroMedicoDTO.builder()
                 .estado(medico.getEstado())
+                .especialidad(medico.getEspecialidad())
+                .dni(medico.getDni())
+                .build();
+    }
+
+    public static MedicoRequestDTO listaMedicoDTO (Medico medico){
+        return MedicoRequestDTO.builder()
+                .nombre(medico.getUsuario().getNombre() + medico.getUsuario().getApellido())
+                .dni(medico.getUsuario().getDni())
+                .especialidad(medico.getEspecialidad())
                 .build();
     }
 }

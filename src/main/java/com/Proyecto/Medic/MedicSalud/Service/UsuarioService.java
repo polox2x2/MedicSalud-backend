@@ -68,6 +68,7 @@ public class UsuarioService {
 
         //les damos los datos de usuario
         paciente.setNombreUsuario(usuario.getNombre() + usuario.getApellido());
+        paciente.setDni(usuario.getDni());
         paciente.setUsuario(usuario);
 
         //guardamos el usuario en paciente
@@ -81,10 +82,10 @@ public class UsuarioService {
     public Usuario registrarUsuarioComoMedico(RegistroUsuarioDTO dto) {
         // validación de correo y dni
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw new IllegalArgumentException("El email ya esta registrado");
         }
         if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())) {
-            throw new IllegalArgumentException("El DNI ya está registrado");
+            throw new IllegalArgumentException("El DNI ya esta registrado");
         }
 
         // Datos mapeados
@@ -108,7 +109,8 @@ public class UsuarioService {
         // Creamos obj medico
         Medico medico = new Medico();
         medico.setUsuario(usuario);
-
+        medico.setEspecialidad(dto.getEspecialidad());
+        medico.setDni(dto.getDni());
 
         // Guardamos el médico
         medicoRepository.save(medico);

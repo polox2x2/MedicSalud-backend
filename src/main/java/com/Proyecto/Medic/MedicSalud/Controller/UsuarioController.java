@@ -136,6 +136,7 @@ public class UsuarioController {
                     content = @Content(schema = @Schema(implementation = RegistroUsuarioDTO.class)))
             @org.springframework.web.bind.annotation.RequestBody RegistroUsuarioDTO dto) {
 
+
         Usuario usuario = usuarioService.registrarUsuarioComoPaciente(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "email", usuario.getEmail(),

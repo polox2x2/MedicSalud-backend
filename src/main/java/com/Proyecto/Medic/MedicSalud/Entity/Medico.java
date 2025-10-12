@@ -4,6 +4,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+
 public class Medico {
 
     @Id
@@ -19,13 +22,13 @@ public class Medico {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    private String nombreUsuario;
-    @Column(nullable = false, length = 100)
     private String especialidad;
     @Pattern(regexp = "\\d{9}", message = "el telefono debe tener 9 digitos")
     private String telefono;
 
     private Boolean estado = true;
+
+    private Integer dni;
 
     //apartado para juntar las tablas
 

@@ -15,7 +15,11 @@ public class RegistroMedicoDTO {
 
     @Schema(description = "Datos del usuario que se asociará al médico", required = true)
     private RegistroUsuarioDTO usuario;
+    @Schema(description = "Especialidad a la que pertenece al medico ", required = true)
+    private String especialidad;
 
+    @Schema(description = "Codigo de Identidad del medico ", required = true)
+    private Integer dni;
     @Schema(description = "Estado del médico (activo/inactivo)", example = "true")
     private Boolean estado = true;
 }

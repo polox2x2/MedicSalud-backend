@@ -2,9 +2,12 @@ package com.Proyecto.Medic.MedicSalud.Mappers;
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.Entity.Medico;
+import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 public class UsuarioMappers {
 
@@ -14,6 +17,7 @@ public class UsuarioMappers {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .email(usuario.getEmail())
+                .roles(usuario.getRoles() != null ? usuario.getRoles().stream().map(rol -> rol.getNombre()).collect(Collectors.toSet()) : java.util.Collections.emptySet())
                 .estado(usuario.getEstado())
                 .build();
     }

@@ -22,4 +22,5 @@ public class RegistroUsuarioDTO {
     private  String direccion;
     private boolean estado;
     private LocalDate fechaNacimiento;
+    private String especialidad;
 }

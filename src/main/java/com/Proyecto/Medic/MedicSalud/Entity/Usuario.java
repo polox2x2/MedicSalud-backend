@@ -41,6 +41,7 @@ public class Usuario {
         @NotBlank(message = "la contraseña es obligatoria")
         private String clave;
 
+
         @Past(message = "La fecha de nacimiento debe ser en el pasado")
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate fechaNacimiento;
@@ -51,6 +52,9 @@ public class Usuario {
         private String direccion;
 
         private LocalDateTime fechaCreacion;
+
+        private String especialidad;
+
 
         private Boolean estado = true;
 

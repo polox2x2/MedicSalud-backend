@@ -8,6 +8,7 @@ import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 import com.Proyecto.Medic.MedicSalud.Mappers.PacienteMapper;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class PacienteService {
         Paciente paciente = new Paciente();
         paciente.setUsuario(usuario);
         paciente.setNombreUsuario(usuario.getNombre());
+        paciente.setDni(usuario.getDni());
         paciente.setEstado(true);
 
         pacienteRepository.save(paciente);
@@ -52,32 +54,46 @@ public class PacienteService {
     }
 
     public Optional<PacienteDTO> obtenerPacientePorUsuarioDTO(UsuarioRequestDTO usuarioDTO) {
-        return usuarioRepository.findByDni(usuarioDTO.getDni())
-                .flatMap(pacienteRepository::findByUsuario)
-                .map(PacienteMapper::toDTO);
+        Usuario usuario = usuarioRepository.findByDni(usuarioDTO.getDni())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado por DNI"));
+
+        return pacienteRepository.findByUsuario(usuario).map(PacienteMapper::toDTO);
     }
 
+    @Transactional()
     public List<PacienteDTO> listarActivos() {
         return pacienteRepository.findByEstadoTrue()
                 .stream()
                 .map(PacienteMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+
     public PacienteDTO buscarPorId(Long id) {
-        return pacienteRepository.findById(id)
+        return pacienteRepository.findByIdConUsuario(id)
                 .map(PacienteMapper::toDTO)
                 .orElse(null);
     }
 
     public PacienteDTO guardar(PacienteDTO dto) {
-        Paciente paciente = PacienteMapper.toEntity(dto);
-        Paciente guardado = pacienteRepository.save(paciente);
+
+        var entidad = PacienteMapper.toEntity(dto);
+
+        if (dto.getDni() != null) {
+            Usuario u = usuarioRepository.findByDni(dto.getDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado por DNI"));
+            entidad.setUsuario(u);
+            if (entidad.getNombreUsuario() == null) {
+                entidad.setNombreUsuario(u.getNombre());
+            }
+        }
+
+        var guardado = pacienteRepository.save(entidad);
         return PacienteMapper.toDTO(guardado);
     }
 
     public void eliminar(Long id) {
         pacienteRepository.deleteById(id);
-
     }
+
 }
