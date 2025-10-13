@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Repository;
 
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,9 +17,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByDni (Integer dni);
     List<Usuario>findAll();
 
-    Optional<Usuario> findByEmail(String email);
     Optional<Usuario> findByDni(Integer dni);
 
-
+    @EntityGraph(attributePaths = "roles")
+    Optional<Usuario> findByEmail(String email);
 
 }

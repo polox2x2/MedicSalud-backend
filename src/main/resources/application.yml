@@ -26,3 +26,8 @@ springdoc:
     tagsSorter: alpha          # ordena tags alfabéticamente
     display-request-duration: true   # muestra tiempo de ejecución
     doc-expansion: none       # none | list | full
+
+  app:
+    jwt:
+      secret: "693efce022c79a936c6eebbdbb8cefda7fceace1"
+      expiration-ms: 86400000

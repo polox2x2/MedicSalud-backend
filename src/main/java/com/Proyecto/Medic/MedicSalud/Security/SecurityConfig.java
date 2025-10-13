@@ -2,7 +2,9 @@ package com.Proyecto.Medic.MedicSalud.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,12 +23,25 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // desactivar CSRF
+        http
+                .cors(c -> {}) // usa el bean de CORS de abajo
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        // público (auth, docs, health, static, etc.)
+                        .requestMatchers("/auth/**", "/actuator/health").permitAll()
+                        // reglas por rol
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasAnyRole("ADMIN", "MEDICO")
+                        .requestMatchers(HttpMethod.POST, "/api/pacientes/**").hasAnyRole("ADMIN", "MEDICO")
+                        .requestMatchers("/api/usuarios/**").permitAll()
+                        // acceso del PACIENTE
+                        .requestMatchers("/api/mis-datos/**").hasRole("PACIENTE")
+                        // el resto autenticado
+                        .anyRequest().authenticated()
                 )
-                .formLogin(login -> login.disable())
-                .httpBasic(basic -> basic.disable());
+
+                .httpBasic(basic -> {});
 
         return http.build();
     }
