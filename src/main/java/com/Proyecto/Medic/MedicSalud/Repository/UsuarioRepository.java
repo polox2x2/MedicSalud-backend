@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByEstadoTrue();
+
     boolean existsByEmail(String emain);
     boolean existsByDni (Integer dni);
     List<Usuario>findAll();
@@ -21,5 +22,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @EntityGraph(attributePaths = "roles")
     Optional<Usuario> findByEmail(String email);
+
 
 }
