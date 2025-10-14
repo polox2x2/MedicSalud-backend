@@ -46,7 +46,8 @@ public class SecurityConfig {
                 // SIN restAuthEntryPoint: usa el built-in que devuelve 401
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/actuator/health").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                        .requestMatchers("/api/auth/**", "/actuator/health","api/mail/envio").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/api/pacientes/**").hasAnyRole("ADMIN","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/pacientes/**").hasAnyRole("ADMIN","MEDICO")

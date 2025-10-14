@@ -3,10 +3,7 @@ package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
-import com.Proyecto.Medic.MedicSalud.Entity.Medico;
-import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
-import com.Proyecto.Medic.MedicSalud.Entity.Rol;
-import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
+import com.Proyecto.Medic.MedicSalud.Entity.*;
 import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
 import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
@@ -29,6 +26,8 @@ public class UsuarioService {
     private final PacienteRepository pacienteRepository;
     private final PasswordEncoder passwordEncoder;
     private final MedicoRepository medicoRepository;
+    private final MailService mailService;
+
 
     /**
      * Importante :
@@ -74,6 +73,16 @@ public class UsuarioService {
         //guardamos el usuario en paciente
         pacienteRepository.save(paciente);
 
+
+        // Envia un correo
+        mailService.enviar(new Mail(
+                usuario.getEmail(),
+                "¡Bienvenido a MedicSalud!",
+                "Hola " + usuario.getNombre() + ",\n\n" +
+                        "Tu registro como PACIENTE se realizó con éxito.\n\n" +
+                        "¡Gracias por unirte!\nMedicSalud"
+        ));
+
         return usuario;
 
     }
@@ -114,6 +123,16 @@ public class UsuarioService {
 
         // Guardamos el médico
         medicoRepository.save(medico);
+
+        // Envia un correo simple
+        mailService.enviar(new Mail(
+                usuario.getEmail(),
+                "¡Bienvenido a MedicSalud!",
+                "Hola " + usuario.getNombre() + ",\n\n" +
+                        "Tu registro como MÉDICO se realizó con éxito.\n\n" +
+                        "¡Bienvenido al equipo!\nMedicSalud"
+        ));
+
 
         return usuario;
     }

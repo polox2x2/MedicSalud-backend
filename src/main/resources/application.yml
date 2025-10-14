@@ -9,6 +9,20 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nekdek1450@gmail.com
+    password: ofhc qyzk rdtb hqbh
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 
   jpa:
     hibernate:
@@ -31,3 +45,4 @@ app:
   jwt:
     secret: "693efce022c79a936c6eebbdbb8cefda7fceace1"
     expiration-ms: 86400000
+

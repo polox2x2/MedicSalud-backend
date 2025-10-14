@@ -17,6 +17,8 @@ public class JwtService {
     private final long expirationMs;
 
     public JwtService(
+
+
             @Value("${app.jwt.secret}") String secret,
             @Value("${app.jwt.expiration-ms}") long expirationMs) {
         // HS256 requiere clave >= 256 bits (32 bytes)
