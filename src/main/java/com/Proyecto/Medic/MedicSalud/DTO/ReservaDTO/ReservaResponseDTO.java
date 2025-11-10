@@ -18,7 +18,9 @@ public class ReservaResponseDTO {
         private Long id;
 
         private String nombrePaciente;
+        private Integer pacienteDni;
         private String nombreMedico;
+        private Integer medicoDni;
         private String nombreSede;
 
         private LocalDateTime fechaCreacion;

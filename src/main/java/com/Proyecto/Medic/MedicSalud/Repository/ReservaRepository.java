@@ -1,5 +1,6 @@
 package com.Proyecto.Medic.MedicSalud.Repository;
 
+import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Reserva;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,7 +9,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ReservaRepository extends JpaRepository<Reserva,Long> {
-
+    List<Reserva> findByEstadoCitaTrue();
 
     boolean existsByMedicoIdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
             Long medicoId, LocalDate fechaCita, LocalTime horaCita

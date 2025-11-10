@@ -2,7 +2,6 @@ package com.Proyecto.Medic.MedicSalud.Controller;
 
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
-import com.Proyecto.Medic.MedicSalud.Entity.Reserva;
 import com.Proyecto.Medic.MedicSalud.Mappers.ReservaMapper;
 import com.Proyecto.Medic.MedicSalud.Service.ReservaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,18 +37,9 @@ public class ReservaController {
                     @ApiResponse(responseCode = "409", description = "Médico ocupado en esa fecha/hora")
             }
     )
-    @PostMapping
-    public ResponseEntity<ReservaResponseDTO> crear(
-            @Valid @RequestBody // <-- ESTA es la de Spring
-            CrearReservaDTO req
-    ) {
-        Reserva r = reservaService.crearReserva(
-                req.getPacienteId(),
-                req.getMedicoId(),
-                req.getSedeId(),
-                req.getFechaCita(),
-                req.getHoraCita()
-        );
+    @PostMapping ("crear/cita")
+    public ResponseEntity<ReservaResponseDTO> crear(@RequestBody CrearReservaDTO req) {
+        var r = reservaService.crearReserva(req);
         return ResponseEntity.ok(ReservaMapper.toResponse(r));
     }
 
@@ -70,12 +59,16 @@ public class ReservaController {
 
         return ResponseEntity.ok(list);
     }
+    @GetMapping("/lista")
+    public ResponseEntity<List<ReservaResponseDTO>>listaPorEstadoTrue(){
+        return ResponseEntity.ok(reservaService.listarActivos());
+    }
 
     @Operation(
             summary = "Cancelar una reserva",
             description = "Marca la reserva como cancelada (estadoCita=false)."
     )
-    @PostMapping("/{reservaId}/cancelar")
+    @PostMapping("/cancelar/{reservaId}")
     public ResponseEntity<ReservaResponseDTO> cancelar(
             @Parameter(description = "ID de la reserva", required = true)
             @PathVariable Long reservaId
@@ -83,5 +76,10 @@ public class ReservaController {
         var r = reservaService.cancelar(reservaId);
 
         return ResponseEntity.ok(ReservaMapper.toResponse(r));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        reservaService.eliminarLogico(id);
+        return ResponseEntity.noContent().build();
     }
 }

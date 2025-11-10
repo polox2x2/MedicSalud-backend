@@ -70,5 +70,7 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
 """)
     List<PacienteDTO> findActivosDTOConDni();
 
+    Optional<Paciente> findByDni(Integer dni);
+    Optional<Paciente> findByNombreUsuarioIgnoreCase(String nombreUsuario);
 }
 

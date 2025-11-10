@@ -1,10 +1,12 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
 
-import com.Proyecto.Medic.MedicSalud.Entity.Medico;
-import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
-import com.Proyecto.Medic.MedicSalud.Entity.Reserva;
-import com.Proyecto.Medic.MedicSalud.Entity.Sede;
+import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.Entity.*;
+import com.Proyecto.Medic.MedicSalud.Mappers.ReservaMapper;
+import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
 import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.ReservaRepository;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,37 +31,81 @@ public class ReservaService {
 
 
 @Transactional
-public Reserva crearReserva (Long pacienteId, Long medicoId, Long sedeId, LocalDate fechaCita, LocalTime horaCita) {
+public Reserva crearReserva (CrearReservaDTO req) {
     // 1)
-    if (fechaCita == null || horaCita == null) {
-        throw new IllegalArgumentException("fechaCita y horaCita son obligatorias");
+    if (req.getFechaCita() == null || req.getHoraCita() == null) {
+        throw new IllegalArgumentException("fecha de la Cita y hora de la Cita son obligatorias");
     }
 
-    // 2) Evitar doble booking (cuenta solo reservas activas)
-    boolean ocupado = reservaRepository.existsByMedicoIdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
-            medicoId, fechaCita, horaCita
-    );
-    if (ocupado) {
-        throw new IllegalStateException("El médico ya tiene una reserva en esa fecha y hora");
-    }
+    // 2) Entidades
+    Paciente paciente = resolvePaciente(req);
+    Medico   medico   = resolveMedico(req);
+    Sede     sede     = resolveSede(req);
+
 
     // 3) Cargar referencias
-    Paciente paciente = pacienteRepository.getReferenceById(pacienteId);
-    Medico medico   = medicoRepository.getReferenceById(medicoId);
-    Sede sede     = sedeRepository.getReferenceById(sedeId);
+    boolean ocupado = reservaRepository.existsByMedicoIdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
+            medico.getId(), req.getFechaCita(), req.getHoraCita());
+    if (ocupado) throw new IllegalStateException("El médico ya tiene una reserva en esa fecha y hora");
+
 
     // 4) Crear y guardar
     Reserva r = new Reserva();
     r.setPaciente(paciente);
     r.setMedico(medico);
     r.setSede(sede);
-    r.setFechaCita(fechaCita);
-    r.setHoraCita(horaCita);
+    r.setFechaCita(req.getFechaCita());
+    r.setHoraCita(req.getHoraCita());
     r.setEstadoCita(true);
-    r.setFechaCreacion(LocalDateTime.now());
+    r.setFechaCreacion(java.time.LocalDateTime.now());
 
     return reservaRepository.save(r);
 }
+    private Paciente resolvePaciente(CrearReservaDTO req) {
+        if (req.getPacienteId() != null)
+            return pacienteRepository.getReferenceById(req.getPacienteId());
+
+        if (req.getPacienteDni() != null)
+            return pacienteRepository.findByDni(req.getPacienteDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado por DNI"));
+
+        if (req.getPacienteNombreUsuario() != null && !req.getPacienteNombreUsuario().isBlank())
+            return pacienteRepository.findByNombreUsuarioIgnoreCase(req.getPacienteNombreUsuario().trim())
+                    .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado por nombreUsuario"));
+
+        throw new IllegalArgumentException("Debe enviar pacienteId o pacienteDni o pacienteNombreUsuario");
+    }
+    private Medico resolveMedico(CrearReservaDTO req) {
+        if (req.getMedicoId() != null)
+            return medicoRepository.getReferenceById(req.getMedicoId());
+
+        if (req.getMedicoDni() != null)
+            return medicoRepository.findByDni(req.getMedicoDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado por DNI"));
+
+        throw new IllegalArgumentException("Debe enviar medicoId o medicoDni");
+    }
+
+    private Sede resolveSede(CrearReservaDTO req) {
+        if (req.getSedeId() != null)
+            return sedeRepository.getReferenceById(req.getSedeId());
+
+        if (req.getSedeNombre() != null && !req.getSedeNombre().isBlank())
+            return sedeRepository.findByNombreClinicaIgnoreCase(req.getSedeNombre().trim())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada por nombre"));
+
+        if (req.getSedeDireccion() != null && !req.getSedeDireccion().isBlank())
+            return sedeRepository.findByDireccionIgnoreCase(req.getSedeDireccion().trim())
+                    .orElseThrow(() -> new IllegalArgumentException("Sede no encontrada por dirección"));
+
+        throw new IllegalArgumentException("Debe enviar sedeId o sedeNombre o sedeDireccion");
+    }
+
+
+
+
+
+
     @Transactional(readOnly = true)
     public java.util.List<Reserva> reservasDePaciente(Long pacienteId) {
         return reservaRepository.findByPacienteIdOrderByFechaCitaDesc(pacienteId);
@@ -68,5 +116,18 @@ public Reserva crearReserva (Long pacienteId, Long medicoId, Long sedeId, LocalD
         var r = reservaRepository.findById(reservaId).orElseThrow();
         r.setEstadoCita(false);
         return r;
+    }
+    public List<ReservaResponseDTO> listarActivos() {
+        return reservaRepository.findByEstadoCitaTrue()
+                .stream()
+                .map(ReservaMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public void eliminarLogico(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("reservacion no encontrado"));
+        reserva.setEstadoCita(false);
+        reservaRepository.save(reserva);
     }
 }

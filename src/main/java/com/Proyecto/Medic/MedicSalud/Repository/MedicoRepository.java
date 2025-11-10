@@ -15,4 +15,5 @@ public interface MedicoRepository extends JpaRepository<Medico,Long> {
 
     List<Medico>findByEstadoTrue ();
     List<Medico>findAll();
+    Optional<Medico> findByDni(Integer dni);
 }

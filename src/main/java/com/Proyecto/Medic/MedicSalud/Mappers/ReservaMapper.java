@@ -17,15 +17,20 @@ public class ReservaMapper {
         String nombreMedico   = null;
         String nombreSede     = null;
 
+        Integer pacienteDni = null;
+        Integer medicoDni = null;
+
         //Usuario
         Paciente p = r.getPaciente();
         if (p != null){
             nombrePaciente = p.getNombreUsuario();
+            pacienteDni =  p.getDni();
         }
         //Medico
         Medico m = r.getMedico();
         if (m != null){
             nombreMedico = m.getUsuario().getNombre();
+            medicoDni = m.getDni();
         }
 
         //Sede
@@ -36,6 +41,8 @@ public class ReservaMapper {
         return ReservaResponseDTO.builder()
                 .id(r.getId())
                 .nombrePaciente(nombrePaciente)
+                .pacienteDni(pacienteDni)
+                .medicoDni(medicoDni)
                 .nombreMedico(nombreMedico)
                 .nombreSede(nombreSede)
                 .estadoCita(r.getEstadoCita())
