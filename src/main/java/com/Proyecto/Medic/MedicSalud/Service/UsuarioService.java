@@ -87,6 +87,7 @@ public class UsuarioService {
 
     }
 
+        //USUARIO-MEDICO
     @Transactional
     public Usuario registrarUsuarioComoMedico(RegistroUsuarioDTO dto) {
         // validación de correo y dni
@@ -137,6 +138,33 @@ public class UsuarioService {
         return usuario;
     }
 
+    //USUARIO-ADMIN (provicional)
+
+    @Transactional
+    public Usuario registrarUsuarioComoAdmin(RegistroUsuarioDTO dto) {
+        //validacion de correo y dni
+        if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (dto.getDni() != null && usuarioRepository.existsByDni(dto.getDni())) {
+            throw new IllegalArgumentException("El DNI ya está registrado");
+        }
+        //Datos Mapeados
+        Usuario usuario = UsuarioMappers.registerUsuarioDTO(dto);
+
+        //Encriptamos la clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+
+        //Agregamos el rol por defecto
+        Rol rolPaciente = rolRepository.findByNombre("ADMIN")
+                .orElseThrow(() -> new RuntimeException("Falta crear el rol ADMIN en la bd"));
+        usuario.getRoles().add(rolPaciente);
+
+        //Guardamos el usuario
+        usuario = usuarioRepository.save(usuario);
+
+        return usuario;
+    }
 
     //USUARIO
 

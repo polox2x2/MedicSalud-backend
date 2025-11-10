@@ -26,7 +26,7 @@ public class UserDetailsConfig {
 
             var authorities = u.getRoles().stream()
                     .filter(r -> r != null && r.getNombre() != null)
-                    .map(r -> "ROL_" + r.getNombre().trim().toUpperCase())
+                    .map(r -> "ROLE_" + r.getNombre().trim().toUpperCase())
                     .map(SimpleGrantedAuthority::new) // <- requiere import correcto
                     .collect(Collectors.toSet());
 

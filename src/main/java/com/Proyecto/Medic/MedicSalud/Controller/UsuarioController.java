@@ -209,4 +209,35 @@ public class UsuarioController {
         usuarioService.eliminarLogico(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    //Provicional
+
+    @PostMapping("/crear-admin")
+    @Operation(
+            summary = "Registrar usuario como ADMIN",
+            description = "Crea el usuario y le asigna el rol ADMIN. Devuelve email, roles y bandera de creación de admin."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Creado",
+                    content = @Content(schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
+    public ResponseEntity<?> crearUsuaroAdimin(
+            @RequestBody(description = "Datos para registro de usuario y admin", required = true,
+                    content = @Content(schema = @Schema(implementation = RegistroUsuarioDTO.class)))
+            @org.springframework.web.bind.annotation.RequestBody RegistroUsuarioDTO dto) {
+
+
+        Usuario usuario = usuarioService.registrarUsuarioComoAdmin(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "email", usuario.getEmail(),
+                "roles", usuario.getRoles(),
+                "AdminCreado", true
+        ));
+    }
+
+
+
+
 }
