@@ -33,7 +33,9 @@ public class MedicoMapper {
 
     public static MedicoRequestDTO listaMedicoDTO (Medico medico){
         return MedicoRequestDTO.builder()
+                .id(medico.getId())
                 .nombre(medico.getUsuario().getNombre() + medico.getUsuario().getApellido())
+                .correo(medico.getUsuario().getEmail())
                 .dni(medico.getUsuario().getDni())
                 .especialidad(medico.getEspecialidad())
                 .build();

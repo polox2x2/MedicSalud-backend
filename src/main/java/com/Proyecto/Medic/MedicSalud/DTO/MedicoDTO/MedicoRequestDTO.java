@@ -8,9 +8,10 @@ import lombok.Data;
 @Data
 @Builder
 public class MedicoRequestDTO {
-
+        private Long id;
         private String nombre;
         private String especialidad;
+        private String correo;
         private Integer dni;
         private String sede;
 

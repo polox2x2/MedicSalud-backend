@@ -55,6 +55,10 @@ public class Usuario {
 
         private String especialidad;
 
+        @Lob
+        @Column(name = "foto_perfil", nullable = true)
+        private byte[] fotoPerfil;
+
 
         private Boolean estado = true;
 

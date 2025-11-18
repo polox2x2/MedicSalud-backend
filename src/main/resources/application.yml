@@ -45,4 +45,7 @@ app:
   jwt:
     secret: "693efce022c79a936c6eebbdbb8cefda7fceace1"
     expiration-ms: 86400000
-
+logging:
+  level:
+    org.springframework.security: DEBUG
+    io.jsonwebtoken: DEBUG

@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Controller;
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioUpDateDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 import com.Proyecto.Medic.MedicSalud.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -180,16 +181,16 @@ public class UsuarioController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Actualizado",
-                    content = @Content(schema = @Schema(implementation = UsuarioDTO.class))),
+                    content = @Content(schema = @Schema(implementation = UsuarioUpDateDTO.class))),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
-    public ResponseEntity<UsuarioDTO> actualizar(
+    public ResponseEntity<UsuarioUpDateDTO> actualizar(
             @Parameter(description = "ID del usuario", example = "1")
             @PathVariable Long id,
             @RequestBody(description = "Nuevos datos del usuario", required = true,
-                    content = @Content(schema = @Schema(implementation = UsuarioDTO.class)))
-            @org.springframework.web.bind.annotation.RequestBody UsuarioDTO usuarioDTO) {
+                    content = @Content(schema = @Schema(implementation = UsuarioUpDateDTO.class)))
+            @org.springframework.web.bind.annotation.RequestBody UsuarioUpDateDTO usuarioDTO) {
 
         return ResponseEntity.ok(usuarioService.actualizar(id, usuarioDTO));
     }

@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Mappers;
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioUpDateDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
@@ -17,6 +18,7 @@ public class UsuarioMappers {
                 .nombre(usuario.getNombre())
                 .apellido(usuario.getApellido())
                 .email(usuario.getEmail())
+                .especialidad(usuario.getEspecialidad())
                 .roles(usuario.getRoles() != null ? usuario.getRoles().stream().map(rol -> rol.getNombre()).collect(Collectors.toSet()) : java.util.Collections.emptySet())
                 .estado(usuario.getEstado())
                 .build();
@@ -40,6 +42,7 @@ public class UsuarioMappers {
                 .clave(dto.getClave())
                 .direccion(dto.getDireccion())
                 .telefono(dto.getTelefono())
+                .especialidad(dto.getEspecialidad())
                 .fechaNacimiento(dto.getFechaNacimiento())
                 .estado(true)
                 .build();
@@ -54,6 +57,14 @@ public class UsuarioMappers {
                 .direccion(usuario.getDireccion())
                 .telefono(usuario.getTelefono())
                 .estado(usuario.getEstado())
+                .build();
+    }
+    public static UsuarioUpDateDTO actualizarUsuario (Usuario usuario){
+        return UsuarioUpDateDTO.builder()
+                .nombre(usuario.getNombre())
+                .apellido(usuario.getApellido())
+                .email(usuario.getEmail())
+                .fotoPerfil(usuario.getFotoPerfil())
                 .build();
     }
 

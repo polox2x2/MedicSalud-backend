@@ -3,78 +3,69 @@ package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
-import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.*;
 import com.Proyecto.Medic.MedicSalud.Mappers.ReservaMapper;
-import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
 import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.PacienteRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.ReservaRepository;
 import com.Proyecto.Medic.MedicSalud.Repository.SedeRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReservaService {
+
     private final ReservaRepository reservaRepository;
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
     private final SedeRepository sedeRepository;
 
+    @Transactional
+    public Reserva crearReserva (CrearReservaDTO req) {
+        if (req.getFechaCita() == null || req.getHoraCita() == null) {
+            throw new IllegalArgumentException("fecha de la Cita y hora de la Cita son obligatorias");
+        }
 
-@Transactional
-public Reserva crearReserva (CrearReservaDTO req) {
-    // 1)
-    if (req.getFechaCita() == null || req.getHoraCita() == null) {
-        throw new IllegalArgumentException("fecha de la Cita y hora de la Cita son obligatorias");
+        Paciente paciente = resolvePaciente(req);
+        Medico   medico   = resolveMedico(req);
+        Sede     sede     = resolveSede(req);
+
+        boolean ocupado = reservaRepository
+                .existsByMedicoIdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
+                        medico.getId(), req.getFechaCita(), req.getHoraCita());
+
+        if (ocupado) {
+            throw new IllegalStateException("El médico ya tiene una reserva en esa fecha y hora");
+        }
+
+        Reserva r = new Reserva();
+        r.setPaciente(paciente);
+        r.setMedico(medico);
+        r.setSede(sede);
+        r.setFechaCita(req.getFechaCita());
+        r.setHoraCita(req.getHoraCita());
+        r.setEstadoCita(true);
+        r.setFechaCreacion(LocalDateTime.now());
+
+        return reservaRepository.save(r);
     }
 
-    // 2) Entidades
-    Paciente paciente = resolvePaciente(req);
-    Medico   medico   = resolveMedico(req);
-    Sede     sede     = resolveSede(req);
-
-
-    // 3) Cargar referencias
-    boolean ocupado = reservaRepository.existsByMedicoIdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
-            medico.getId(), req.getFechaCita(), req.getHoraCita());
-    if (ocupado) throw new IllegalStateException("El médico ya tiene una reserva en esa fecha y hora");
-
-
-    // 4) Crear y guardar
-    Reserva r = new Reserva();
-    r.setPaciente(paciente);
-    r.setMedico(medico);
-    r.setSede(sede);
-    r.setFechaCita(req.getFechaCita());
-    r.setHoraCita(req.getHoraCita());
-    r.setEstadoCita(true);
-    r.setFechaCreacion(java.time.LocalDateTime.now());
-
-    return reservaRepository.save(r);
-}
     private Paciente resolvePaciente(CrearReservaDTO req) {
-        if (req.getPacienteId() != null)
-            return pacienteRepository.getReferenceById(req.getPacienteId());
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
-        if (req.getPacienteDni() != null)
-            return pacienteRepository.findByDni(req.getPacienteDni())
-                    .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado por DNI"));
-
-        if (req.getPacienteNombreUsuario() != null && !req.getPacienteNombreUsuario().isBlank())
-            return pacienteRepository.findByNombreUsuarioIgnoreCase(req.getPacienteNombreUsuario().trim())
-                    .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado por nombreUsuario"));
-
-        throw new IllegalArgumentException("Debe enviar pacienteId o pacienteDni o pacienteNombreUsuario");
+        return pacienteRepository.findByUsuario_Email(username)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado"));
     }
+
     private Medico resolveMedico(CrearReservaDTO req) {
         if (req.getMedicoId() != null)
             return medicoRepository.getReferenceById(req.getMedicoId());
@@ -101,13 +92,23 @@ public Reserva crearReserva (CrearReservaDTO req) {
         throw new IllegalArgumentException("Debe enviar sedeId o sedeNombre o sedeDireccion");
     }
 
+    @Transactional(readOnly = true)
+    public List<ReservaResponseDTO> listarReservasPacienteLogueado() {
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
+        Paciente paciente = pacienteRepository.findByUsuario_Email(username)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado"));
 
-
-
+        return reservaRepository.findByPacienteIdOrderByFechaCitaDesc(paciente.getId())
+                .stream()
+                .map(ReservaMapper::toResponse)
+                .toList();
+    }
 
     @Transactional(readOnly = true)
-    public java.util.List<Reserva> reservasDePaciente(Long pacienteId) {
+    public List<Reserva> reservasDePaciente(Long pacienteId) {
         return reservaRepository.findByPacienteIdOrderByFechaCitaDesc(pacienteId);
     }
 
@@ -117,6 +118,8 @@ public Reserva crearReserva (CrearReservaDTO req) {
         r.setEstadoCita(false);
         return r;
     }
+
+    @Transactional(readOnly = true)
     public List<ReservaResponseDTO> listarActivos() {
         return reservaRepository.findByEstadoCitaTrue()
                 .stream()
@@ -124,6 +127,7 @@ public Reserva crearReserva (CrearReservaDTO req) {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void eliminarLogico(Long id) {
         Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("reservacion no encontrado"));
@@ -131,3 +135,4 @@ public Reserva crearReserva (CrearReservaDTO req) {
         reservaRepository.save(reserva);
     }
 }
+

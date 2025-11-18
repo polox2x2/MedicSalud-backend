@@ -11,20 +11,12 @@ import java.time.LocalTime;
 @Schema(name = "ReservaCrearDTO", description = "Datos necesarios para crear una reserva")
 public class CrearReservaDTO {
 
-
-    private Long pacienteId;
-    private Integer pacienteDni;
-    private String pacienteNombreUsuario;
-
-
     private Long medicoId;
     private Integer medicoDni;
-
 
     private Long sedeId;
     private String sedeNombre;
     private String sedeDireccion;
-
 
     @NotNull
     private LocalDate fechaCita;

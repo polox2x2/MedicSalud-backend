@@ -1,12 +1,13 @@
 package com.Proyecto.Medic.MedicSalud.Controller;
 
+import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.DisponibilidadMedicoDTO;
 import com.Proyecto.Medic.MedicSalud.Service.MedicoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,5 +27,18 @@ public class MedicoController {
     public ResponseEntity<List<?>>listaMedicosActivos(){
         return ResponseEntity.ok(medicoService.listaActivos());
     }
+
+    @GetMapping("/{id}/disponibilidad")
+    public ResponseEntity<DisponibilidadMedicoDTO> obtenerDisponibilidad(
+            @PathVariable Long id,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fecha
+    ) {
+        return ResponseEntity.ok(
+                medicoService.obtenerDisponibilidad(id, fecha)
+        );
+    }
+
 
 }

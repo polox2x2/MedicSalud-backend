@@ -6,6 +6,7 @@ import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
 import com.Proyecto.Medic.MedicSalud.Service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,31 +30,42 @@ public class AuthController {
     @Value("${app.jwt.expiration-ms}")
     private long appExpirationMs;   // <-- agrega esto
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO req) {
-        var auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
+        try {
+            var auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
+            );
 
-        var user  = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-        var token = jwtService.generateToken(user);
-        var exp   = Instant.now().plusMillis(appExpirationMs);
+            var user = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+            var token = jwtService.generateToken(user);
+            var exp = Instant.now().plusMillis(appExpirationMs);
 
-        var roles = user.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .collect(Collectors.toSet());
+            var roles = user.getAuthorities().stream()
+                    .map(a -> a.getAuthority())
+                    .collect(Collectors.toSet());
 
-        return ResponseEntity.ok(new JwtResponseDTO(token, "Bearer", exp, user.getUsername(), roles));
+            return ResponseEntity.ok(new JwtResponseDTO(token, "Bearer", exp, user.getUsername(), roles));
+        } catch (org.springframework.security.core.AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Credenciales inválidas"));
+        }
     }
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
         return ResponseEntity.noContent().build(); // 204
     }
 
-    @GetMapping("/me")
-    public Map<String,Object> me(Authentication  auth) {
-        return Map.of(
-                "username", auth.getName(),
-                "authorities", auth.getAuthorities()
-        );
+    @GetMapping(value = "/me", produces = "application/json")
+    public ResponseEntity<?> me(Authentication auth) {
+        if (auth == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        var roles = auth.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toSet());
+        return ResponseEntity.ok(Map.of("username", auth.getName(), "roles", roles));
     }
+
+
+
+
+
+
 }

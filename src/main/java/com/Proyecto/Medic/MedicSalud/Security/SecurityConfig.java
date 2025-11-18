@@ -79,7 +79,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reservas/paciente/**").hasAnyRole("ADMIN","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/reservas/paciente/**").hasAnyRole("ADMIN","MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/reservas/**").hasAnyRole("ADMIN","MEDICO")
+                        .requestMatchers(HttpMethod.POST, "/api/horarios/**").hasAnyRole("ADMIN","MEDICO")
+                        .requestMatchers(HttpMethod.GET, "/api/horarios/mis-horarios").hasAnyRole("ADMIN","MEDICO")
+                        .requestMatchers(HttpMethod.GET, "/api/horarios/medico/**").hasAnyRole("ADMIN","MEDICO","PACIENTE")
+                        .requestMatchers(HttpMethod.GET, "/api/reservas/lista/**").permitAll()
 
+                        .requestMatchers("/api/recetas/**").permitAll()
+                        
                         .requestMatchers("/api/usuarios/crear-paciente").permitAll()
 
 
@@ -91,6 +97,8 @@ public class SecurityConfig {
 
 
                         .requestMatchers("/api/mis-datos/**").hasRole("PACIENTE")
+                        .requestMatchers("/api/reservas/**").hasRole("PACIENTE")
+
 
                         // TODO LO DEMAS
                         .anyRequest().authenticated()

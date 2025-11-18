@@ -33,7 +33,13 @@ public class Paciente {
 
     private Boolean estado=true;
 
+    @Lob
+    @Column(name = "foto_perfil", nullable = true)
+    private byte[] fotoPerfil;
+
     @OneToMany(mappedBy = "paciente")
     private List<Historial> historialMedico;
 
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Receta> recetas;
 }

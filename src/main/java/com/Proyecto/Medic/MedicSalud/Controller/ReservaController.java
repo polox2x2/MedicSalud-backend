@@ -8,9 +8,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,14 +22,13 @@ import java.util.List;
 @RequestMapping("/api/reservas")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Reservas", description = "Gestión de reservas de citas")
 public class ReservaController {
 
     private final ReservaService reservaService;
 
     @Operation(
             summary = "Crear una reserva",
-            description = "Crea una reserva evitando solapamientos",
+            description = "Crea una reserva para el PACIENTE logueado evitando solapamientos",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Reserva creada",
                             content = @Content(schema = @Schema(implementation = ReservaResponseDTO.class))),
@@ -37,30 +36,30 @@ public class ReservaController {
                     @ApiResponse(responseCode = "409", description = "Médico ocupado en esa fecha/hora")
             }
     )
-    @PostMapping ("crear/cita")
-    public ResponseEntity<ReservaResponseDTO> crear(@RequestBody CrearReservaDTO req) {
+    @PostMapping("/crear")
+    public ResponseEntity<ReservaResponseDTO> crear(
+            @Valid @RequestBody CrearReservaDTO req
+    ) {
         var r = reservaService.crearReserva(req);
         return ResponseEntity.ok(ReservaMapper.toResponse(r));
     }
 
     @Operation(
-            summary = "Listar reservas de un paciente",
-            description = "Devuelve las reservas de un paciente ordenadas por fecha de cita descendente."
+            summary = "Listar mis reservas",
+            description = "Devuelve las reservas del paciente autenticado, ordenadas por fecha de cita DESC."
     )
-    @GetMapping("/paciente/{pacienteId}")
-    public ResponseEntity<List<ReservaResponseDTO>> listarPorPaciente(
-            @Parameter(description = "ID del paciente", required = true)
-            @PathVariable Long pacienteId
-    ) {
-        var list = reservaService.reservasDePaciente(pacienteId)
-                .stream()
-                .map(ReservaMapper::toResponse )
-                .toList();
-
+    @GetMapping("/mis-reservas")
+    public ResponseEntity<List<ReservaResponseDTO>> listarMisReservas() {
+        var list = reservaService.listarReservasPacienteLogueado();
         return ResponseEntity.ok(list);
     }
+
+    @Operation(
+            summary = "Listar todas las reservas activas",
+            description = "Solo para administración."
+    )
     @GetMapping("/lista")
-    public ResponseEntity<List<ReservaResponseDTO>>listaPorEstadoTrue(){
+    public ResponseEntity<List<ReservaResponseDTO>> listaPorEstadoTrue() {
         return ResponseEntity.ok(reservaService.listarActivos());
     }
 
@@ -74,12 +73,13 @@ public class ReservaController {
             @PathVariable Long reservaId
     ) {
         var r = reservaService.cancelar(reservaId);
-
         return ResponseEntity.ok(ReservaMapper.toResponse(r));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         reservaService.eliminarLogico(id);
         return ResponseEntity.noContent().build();
     }
 }
+

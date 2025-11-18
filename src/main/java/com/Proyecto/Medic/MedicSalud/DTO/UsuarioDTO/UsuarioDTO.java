@@ -19,5 +19,6 @@ public class UsuarioDTO {
     private String apellido;
     private String email;
     private Set<String> roles;
+    private String especialidad;
     private boolean estado;
 }

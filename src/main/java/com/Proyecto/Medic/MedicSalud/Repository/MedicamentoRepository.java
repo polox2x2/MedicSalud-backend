@@ -13,6 +13,8 @@ public interface MedicamentoRepository extends JpaRepository<Medicamento, Long> 
     Page<Medicamento> findByEstadoTrue(Pageable pageable);
     Page<Medicamento> findByEstadoTrueAndNombreContainingIgnoreCase(String nombre, Pageable pageable);
     List<Medicamento> findByEstadoTrue();
+
+
     boolean existsByCodigoBarras(String codigoBarras);
 
     // Medicamentos activos con stock >= minStock en una sede

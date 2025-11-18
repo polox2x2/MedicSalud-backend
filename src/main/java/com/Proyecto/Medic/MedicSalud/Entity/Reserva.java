@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,39 +33,52 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Fecha en la que se creó la reserva
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
-    // Día de la cita
     @NotNull
-    @Future
+    @Future(message = "La fecha de la cita debe ser futura")
     @Column(name = "fecha_cita", nullable = false)
     private LocalDate fechaCita;
 
-    // Hora exacta de la cita
     @NotNull
     @Column(name = "hora_cita", nullable = false)
     private LocalTime horaCita;
 
+    @NotNull
     @Column(nullable = false)
     private Boolean estadoCita = true;
 
-    // Relación con médico
     @ManyToOne
     @JoinColumn(name = "id_medico", nullable = false)
+    @NotNull(message = "El médico es obligatorio")
     private Medico medico;
 
-    // Relación con sede
     @ManyToOne
     @JoinColumn(name = "id_sede", nullable = false)
+    @NotNull(message = "La sede es obligatoria")
     private Sede sede;
 
-    // Relación con paciente
     @ManyToOne
     @JoinColumn(name = "id_paciente", nullable = false)
+    @NotNull(message = "El paciente es obligatorio")
     private Paciente paciente;
 
-    // Control de concurrencia (evita doble confirmación)
     @Version
     private Long version;
+
+    @AssertTrue(message = "La hora de la cita debe estar dentro del horario del médico")
+    public boolean isHoraDentroHorarioMedico() {
+        if (medico == null || fechaCita == null || horaCita == null) return true;
+
+        DayOfWeek dia = fechaCita.getDayOfWeek();
+
+        if (medico.getHorarios() == null || medico.getHorarios().isEmpty()) return false;
+
+        return medico.getHorarios().stream()
+                .filter(h -> h.getDia() == dia)
+                .anyMatch(h ->
+                        !horaCita.isBefore(h.getHoraInicio()) &&
+                                !horaCita.isAfter(h.getHoraFin())
+                );
+    }
 }

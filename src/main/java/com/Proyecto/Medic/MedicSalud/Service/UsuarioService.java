@@ -3,6 +3,7 @@ package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.RegistroUsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioUpDateDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.*;
 import com.Proyecto.Medic.MedicSalud.Mappers.UsuarioMappers;
 import com.Proyecto.Medic.MedicSalud.Repository.MedicoRepository;
@@ -73,15 +74,15 @@ public class UsuarioService {
         //guardamos el usuario en paciente
         pacienteRepository.save(paciente);
 
-
-        // Envia un correo
-        mailService.enviar(new Mail(
-                usuario.getEmail(),
-                "¡Bienvenido a MedicSalud!",
-                "Hola " + usuario.getNombre() + ",\n\n" +
-                        "Tu registro como PACIENTE se realizó con éxito.\n\n" +
-                        "¡Gracias por unirte!\nMedicSalud"
-        ));
+//
+//        // Envia un correo
+//        mailService.enviar(new Mail(
+//                usuario.getEmail(),
+//                "¡Bienvenido a MedicSalud!",
+//                "Hola " + usuario.getNombre() + ",\n\n" +
+//                        "Tu registro como PACIENTE se realizó con éxito.\n\n" +
+//                        "¡Gracias por unirte!\nMedicSalud"
+//        ));
 
         return usuario;
 
@@ -126,13 +127,13 @@ public class UsuarioService {
         medicoRepository.save(medico);
 
         // Envia un correo simple
-        mailService.enviar(new Mail(
-                usuario.getEmail(),
-                "¡Bienvenido a MedicSalud!",
-                "Hola " + usuario.getNombre() + ",\n\n" +
-                        "Tu registro como MÉDICO se realizó con éxito.\n\n" +
-                        "¡Bienvenido al equipo!\nMedicSalud"
-        ));
+//        mailService.enviar(new Mail(
+//                usuario.getEmail(),
+//                "¡Bienvenido a MedicSalud!",
+//                "Hola " + usuario.getNombre() + ",\n\n" +
+//                        "Tu registro como MÉDICO se realizó con éxito.\n\n" +
+//                        "¡Bienvenido al equipo!\nMedicSalud"
+//        ));
 
 
         return usuario;
@@ -187,14 +188,15 @@ public class UsuarioService {
         return UsuarioMappers.toDTO(usuarioRepository.save(usuario));
     }
 
-    public UsuarioDTO actualizar(Long id, UsuarioDTO usuarioDTO) {
+    public UsuarioUpDateDTO actualizar(Long id, UsuarioUpDateDTO usuarioDTO) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
         usuario.setEmail(usuarioDTO.getEmail());
-        return UsuarioMappers.toDTO(usuarioRepository.save(usuario));
+        usuario.setFotoPerfil(usuario.getFotoPerfil());
+        return UsuarioMappers.actualizarUsuario(usuarioRepository.save(usuario));
     }
 
     public void eliminarLogico(Long id) {
@@ -207,4 +209,6 @@ public class UsuarioService {
     public List<Usuario> buscarTodos() {
         return usuarioRepository.findAll();
     }
+
+
 }

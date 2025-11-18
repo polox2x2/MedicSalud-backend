@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico,Long> {
 
+    Optional<Medico> findByUsuario_Email(String email);
+
     List<Medico>findByEstadoTrue ();
     List<Medico>findAll();
     Optional<Medico> findByDni(Integer dni);
