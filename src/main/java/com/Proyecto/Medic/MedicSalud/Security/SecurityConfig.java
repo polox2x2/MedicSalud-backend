@@ -68,7 +68,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers("/actuator/health", "/api/mail/envio").permitAll()
-
+                        .requestMatchers("/api/recetas/**").permitAll()
+                        .requestMatchers("/api/usuarios/crear-paciente").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reservas/lista/**").permitAll()
                         // AUTH REQUERIDA
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
 
@@ -82,11 +84,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/horarios/**").hasAnyRole("ADMIN","MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/horarios/mis-horarios").hasAnyRole("ADMIN","MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/horarios/medico/**").hasAnyRole("ADMIN","MEDICO","PACIENTE")
-                        .requestMatchers(HttpMethod.GET, "/api/reservas/lista/**").permitAll()
-
-                        .requestMatchers("/api/recetas/**").permitAll()
-                        
-                        .requestMatchers("/api/usuarios/crear-paciente").permitAll()
 
 
 
