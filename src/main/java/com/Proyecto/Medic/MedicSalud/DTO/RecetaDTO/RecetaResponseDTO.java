@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 public class RecetaResponseDTO {
 
+    private Long id;
+
     private Long pacienteId;
     private String pacienteNombre;
 

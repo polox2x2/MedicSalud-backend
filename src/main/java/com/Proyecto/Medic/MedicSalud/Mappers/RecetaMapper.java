@@ -10,10 +10,17 @@ public class RecetaMapper {
 
     public RecetaResponseDTO mapToResponse(Receta receta) {
         return RecetaResponseDTO.builder()
+                .id(receta.getId())
                 .pacienteId(receta.getPaciente().getId())
-                .pacienteNombre(receta.getPaciente().getUsuario().getNombre() + "" + receta.getPaciente().getUsuario().getApellido())
+                .pacienteNombre(
+                        receta.getPaciente().getUsuario().getNombre() + " " +
+                                receta.getPaciente().getUsuario().getApellido()
+                )
                 .medicoId(receta.getMedico().getId())
-                .medicoNombre(receta.getMedico().getUsuario().getNombre())
+                .medicoNombre(
+                        receta.getMedico().getUsuario().getNombre() + " " +
+                                receta.getMedico().getUsuario().getApellido()
+                )
                 .medicamentoId(receta.getMedicamento().getId())
                 .medicamentoNombre(receta.getMedicamento().getNombre())
                 .dosis(receta.getDosis())

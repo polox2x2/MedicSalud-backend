@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Controller;
 
 
+import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.ActualizarRecetaRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.CrearRecetaRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.RecetaResponseDTO;
 import com.Proyecto.Medic.MedicSalud.Service.RecetaService;
@@ -37,6 +38,45 @@ public class RecetaController {
     public ResponseEntity<List<RecetaResponseDTO>> recetasPorMedico(
             @PathVariable Long medicoId) {
         return ResponseEntity.ok(recetaService.listarPorMedico(medicoId));
+    }
+
+
+    @GetMapping("/paciente/dni/{dni}")
+    public ResponseEntity<List<RecetaResponseDTO>> recetasPorPacienteDni(
+            @PathVariable Integer dni) {
+        return ResponseEntity.ok(recetaService.listarPorPacienteDni(dni));
+    }
+
+    @GetMapping("/medico/dni/{dni}")
+    public ResponseEntity<List<RecetaResponseDTO>> recetasPorMedicoDni(
+            @PathVariable Integer dni) {
+        return ResponseEntity.ok(recetaService.listarPorMedicoDni(dni));
+    }
+
+
+    @GetMapping("/paciente/me")
+    public ResponseEntity<List<RecetaResponseDTO>> recetasPacienteActual() {
+        return ResponseEntity.ok(recetaService.listarRecetasPacienteActual());
+    }
+
+    @GetMapping("/medico/me")
+    public ResponseEntity<List<RecetaResponseDTO>> recetasMedicoActual() {
+        return ResponseEntity.ok(recetaService.listarRecetasMedicoActual());
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RecetaResponseDTO> actualizarReceta(
+            @PathVariable Long id,
+            @Valid @RequestBody ActualizarRecetaRequestDTO dto) {
+        return ResponseEntity.ok(recetaService.actualizarReceta(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarReceta(
+            @PathVariable Long id) {
+        recetaService.eliminarRecetaLogica(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

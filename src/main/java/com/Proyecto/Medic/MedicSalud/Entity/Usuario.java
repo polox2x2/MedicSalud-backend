@@ -34,7 +34,7 @@ public class Usuario {
         @Min(value =10000000 ,message = "El DNI debe tene 8 digitos" )
         @Max(value =99999999 ,message = "El DNI debe tener 8 digitos")
         private Integer dni;
-        @NotNull
+
         @NotBlank (message = "El email es obligatorio")
         @Email (message = "el formato no coincide")
         private String email;

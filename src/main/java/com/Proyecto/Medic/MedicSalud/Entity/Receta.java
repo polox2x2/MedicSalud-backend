@@ -28,8 +28,8 @@ public class Receta {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion  ;
 
-
-
+    @Column(nullable = false)
+    private Boolean estado = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", nullable = false)

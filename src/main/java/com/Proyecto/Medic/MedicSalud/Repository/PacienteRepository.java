@@ -15,7 +15,6 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
 
 
 
-    Optional<Paciente> findByUsuario_Email(String email);
 
     Optional<Paciente> findByUsuario(Usuario usuario);
 
@@ -81,5 +80,7 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
     Optional<Paciente> findByDniAndEstadoTrue(Integer dni);
     Optional<Paciente> findByDni(Integer dni);
     Optional<Paciente> findByNombreUsuarioIgnoreCase(String nombreUsuario);
+
+    Optional<Paciente> findByUsuario_Email(String email);
 }
 
