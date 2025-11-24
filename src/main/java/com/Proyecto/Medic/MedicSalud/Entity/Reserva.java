@@ -45,20 +45,21 @@ public class Reserva {
     private LocalTime horaCita;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "estado_cita")
     private Boolean estadoCita = true;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "id_medico", nullable = false)
     @NotNull(message = "El médico es obligatorio")
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Medico medico;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sede", nullable = false)
     @NotNull(message = "La sede es obligatoria")
     private Sede sede;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_paciente", nullable = false)
     @NotNull(message = "El paciente es obligatorio")
     private Paciente paciente;

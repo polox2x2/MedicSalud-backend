@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MedicoService {
 
-
     private final MedicoRepository medicoRepository;
     private final RecetaRepository recetaRepo;
     private final ReservaRepository reservaRepository;
@@ -41,7 +40,7 @@ public class MedicoService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional()
+    @Transactional
     public DisponibilidadMedicoDTO obtenerDisponibilidad(Long medicoId, LocalDate fecha) {
 
         Medico medico = medicoRepository.findById(medicoId)
@@ -55,8 +54,9 @@ public class MedicoService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("El médico no atiende ese día"));
 
+
         List<Reserva> reservas = reservaRepository
-                .findByMedicoIdAndFechaCitaOrderByHoraCitaAsc(medicoId, fecha);
+                .findByMedico_IdAndFechaCitaOrderByHoraCitaAsc(medicoId, fecha);
 
         List<LocalTime> horasOcupadas = reservas.stream()
                 .filter(Reserva::getEstadoCita)
@@ -81,9 +81,4 @@ public class MedicoService {
                 .horarios(bloques)
                 .build();
     }
-
-
-
-
-
 }

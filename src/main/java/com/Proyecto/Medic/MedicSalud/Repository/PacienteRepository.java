@@ -5,6 +5,7 @@ import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +22,10 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
     boolean existsByUsuario(Usuario usuario);
 
     List<Paciente> findByEstadoTrue();
+
+    @Query("SELECT p FROM Paciente p WHERE p.dni = :dni")
+    Optional<Paciente> buscarPorDni(@Param("dni") Integer dni);
+
 
     @Query("""
         SELECT p FROM Paciente p

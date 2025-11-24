@@ -1,9 +1,9 @@
 package com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO;
 
-import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -11,8 +11,13 @@ import java.time.LocalTime;
 @Schema(name = "ReservaCrearDTO", description = "Datos necesarios para crear una reserva")
 public class CrearReservaDTO {
 
+
     private Long medicoId;
     private Integer medicoDni;
+
+
+    private Integer pacienteDni;
+
 
     private Long sedeId;
     private String sedeNombre;
@@ -22,4 +27,6 @@ public class CrearReservaDTO {
     private LocalDate fechaCita;
     @NotNull
     private LocalTime horaCita;
+
+    private Boolean estado;
 }

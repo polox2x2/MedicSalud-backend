@@ -1,10 +1,10 @@
 package com.Proyecto.Medic.MedicSalud.Mappers;
 
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Reserva;
-import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Sede;
 
 public class ReservaMapper {
@@ -18,37 +18,41 @@ public class ReservaMapper {
         String nombreSede     = null;
 
         Integer pacienteDni = null;
-        Integer medicoDni = null;
+        Integer medicoDni   = null;
 
-        //Usuario
+        // Paciente
         Paciente p = r.getPaciente();
-        if (p != null){
+        if (p != null) {
             nombrePaciente = p.getNombreUsuario();
-            pacienteDni =  p.getDni();
+            pacienteDni    = p.getDni();
         }
-        //Medico
+
+        // Médico
         Medico m = r.getMedico();
-        if (m != null){
-            nombreMedico = m.getUsuario().getNombre();
+        if (m != null) {
+            if (m.getUsuario() != null) {
+                nombreMedico = m.getUsuario().getNombre();
+            }
             medicoDni = m.getDni();
         }
 
-        //Sede
+        // Sede
         Sede s = r.getSede();
-        if (s != null){
+        if (s != null) {
             nombreSede = s.getNombreClinica();
         }
+
         return ReservaResponseDTO.builder()
                 .id(r.getId())
                 .nombrePaciente(nombrePaciente)
                 .pacienteDni(pacienteDni)
-                .medicoDni(medicoDni)
                 .nombreMedico(nombreMedico)
+                .medicoDni(medicoDni)
                 .nombreSede(nombreSede)
-                .estadoCita(r.getEstadoCita())
                 .fechaCreacion(r.getFechaCreacion())
                 .fechaCita(r.getFechaCita())
                 .horaCita(r.getHoraCita())
+                .estadoCita(r.getEstadoCita())
                 .build();
     }
 
@@ -61,5 +65,4 @@ public class ReservaMapper {
         r.setHoraCita(dto.getHoraCita());
         return r;
     }
-
 }

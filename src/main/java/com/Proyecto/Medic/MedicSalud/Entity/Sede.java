@@ -22,6 +22,9 @@ public class Sede {
 
     private String direccion;
 
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true;
+
     //vinculacion con otra tabla
     @OneToMany(mappedBy = "sede")
     private List<Medico>medicos;
