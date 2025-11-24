@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 public interface MedicamentoRepository extends JpaRepository<Medicamento, Long> {
     Page<Medicamento> findByEstadoTrue(Pageable pageable);
@@ -16,6 +17,16 @@ public interface MedicamentoRepository extends JpaRepository<Medicamento, Long> 
 
 
     boolean existsByCodigoBarras(String codigoBarras);
+
+
+
+    Optional<Medicamento> findByIdAndEstadoTrue(Long id);
+
+
+
+    Optional<Medicamento> findByCodigoBarrasAndEstadoTrue(String codigoBarras);
+
+
 
     // Medicamentos activos con stock >= minStock en una sede
     @Query("""

@@ -99,7 +99,7 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/pacientes/**")
                         .hasAnyRole("ADMIN", "MEDICO")
-
+                        .requestMatchers(HttpMethod.POST,"/api/ventas").hasAnyRole("ADMIN","MEDICO")
 
 
                         // reservas por paciente

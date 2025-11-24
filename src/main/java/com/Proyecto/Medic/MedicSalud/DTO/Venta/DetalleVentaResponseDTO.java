@@ -1,15 +1,21 @@
-package com.Proyecto.Medic.MedicSalud.DTO.InventarioDTO;
+package com.Proyecto.Medic.MedicSalud.DTO.Venta;
 
-import lombok.*;
+
+import lombok.Builder;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class DetalleVentaDTO {
+public class DetalleVentaResponseDTO {
+
     private Long medicamentoId;
+    private String medicamentoNombre;
+
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;
+
+
 }
