@@ -1,19 +1,27 @@
 server:
   port: 8080
+
 spring:
+  profiles:
+    active: dev
+  config:
+    import: optional:file:.env.properties[.properties]
+
   application:
     name: MedicSalud
   datasource:
     url: jdbc:mysql://localhost:3306/clinica_db
 
-    username: root
-    password: root
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: nekdek1450@gmail.com
-    password: ofhc qyzk rdtb hqbh
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     default-encoding: UTF-8
     properties:
       mail:
@@ -23,7 +31,6 @@ spring:
             enable: true
 
 
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,6 +38,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+
+
 springdoc:
   api-docs:
     path: /api-docs        # endpoint JSON/YAML de OpenAPI
@@ -43,9 +52,32 @@ springdoc:
 
 app:
   jwt:
-    secret: "693efce022c79a936c6eebbdbb8cefda7fceace1"
+    secret: ${SECRET_JWT}
     expiration-ms: 86400000
 logging:
   level:
     org.springframework.security: DEBUG
     io.jsonwebtoken: DEBUG
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+paypal:
+  client-id: ${CLIENT_ID_SANDBOX}
+  client-secret: ${CLIENT_SECRET_SANDBOX}
+  mode: sandbox

@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Security;
 
-import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
+;
+import com.Proyecto.Medic.MedicSalud.core.oauth2.Security.CustomOAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,8 +29,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // INYECTA tu filtro JWT
+
     private final JwtAuthenticationFilter jwtFilter;
+
+    private final CustomOAuth2SuccessHandler oAuth2SuccessHandler;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -62,9 +65,19 @@ public class SecurityConfig {
         http
                 .cors(c -> {})
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
+
+                        // 1) Permitir TODOS los preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // 2) Endpoints de prueba PayPal
+                        .requestMatchers("/api/paypal-test/**").permitAll()
+
+                        .requestMatchers("/oauth2/**", "/login/**", "/error").permitAll()
 
                         //  ENDPOINTS PÚBLICOS
                         .requestMatchers(HttpMethod.POST,
@@ -79,7 +92,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reservas/lista/**").permitAll()
                         .requestMatchers("/api/recetas/**").permitAll()
 
-                        // DEBUG (solo autenticado)
+                        // DEBUG
                         .requestMatchers("/api/debug/**").authenticated()
 
                         // CUALQUIER USUARIO AUTENTICADO
@@ -101,7 +114,6 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers(HttpMethod.POST,"/api/ventas").hasAnyRole("ADMIN","MEDICO")
 
-
                         // reservas por paciente
                         .requestMatchers(HttpMethod.GET, "/api/reservas/**")
                         .hasAnyRole("PACIENTE", "ADMIN", "MEDICO")
@@ -109,10 +121,6 @@ public class SecurityConfig {
                         // creación de reserva del propio paciente
                         .requestMatchers(HttpMethod.POST, "/api/reservas/paciente/**")
                         .hasRole("PACIENTE")
-
-
-
-                        // ------- HORARIOS -------
 
                         // horarios gestionados por admin/medico
                         .requestMatchers(HttpMethod.POST, "/api/horarios/**")
@@ -133,11 +141,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // CORS simple para Angular
+    // CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:4200","http://localhost:5500", "http://127.0.0.1:5500"));
         config.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
