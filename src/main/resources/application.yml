@@ -12,10 +12,10 @@ spring:
     name: MedicSalud
 
   datasource:
-    url: jdbc:mysql://b4uoq0rshdc6ogtoeymt-mysql.services.clever-cloud.com:3306/b4uoq0rshdc6ogtoeymt
-    username: uuhwblprjqiupwbx
-    password: h0qjyL8ufIoKlvwMJWLJ
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://db.wjmvwlmcrmwvmpkptllh.supabase.co:5432/postgres?sslmode=require
+    username: postgres
+    password: 'uD0[a%D64`:l1&lJ'
+    driver-class-name: com.postgres.Driver
 
   mail:
     host: smtp.gmail.com
@@ -35,11 +35,12 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
   security:
     oauth2:
+
       client:
         registration:
           google:
