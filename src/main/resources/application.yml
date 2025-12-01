@@ -15,7 +15,7 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
     host: smtp.gmail.com
@@ -35,7 +35,7 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
   security:
