@@ -49,7 +49,6 @@ public class VentaService {
                     .findByIdAndEstadoTrue(item.getMedicamentoId())
                     .orElseThrow(() -> new IllegalArgumentException("Medicamento no encontrado"));
 
-            // AQUÍ ESTABA TU PROBLEMA
             Inventario inventario = inventarioRepository
                     .findByMedicamento_IdAndSede_IdAndEstadoTrue(medicamento.getId(), sede.getId())
                     .orElseThrow(() -> new IllegalStateException(
@@ -64,18 +63,16 @@ public class VentaService {
                 );
             }
 
-            // descuenta stock
+
             inventario.setStock(inventario.getStock() - item.getCantidad());
             if (inventario.getStock() == 0) {
                 inventario.setEstado(false);
             }
 
-            // detalle de venta
             BigDecimal precioUnitario = medicamento.getPrecioVenta();
             BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(item.getCantidad()));
 
             DetalleVenta detalle = DetalleVenta.builder()
-                    .venta(venta)
                     .medicamento(medicamento)
                     .cantidad(item.getCantidad())
                     .precioUnitario(precioUnitario)
@@ -90,7 +87,6 @@ public class VentaService {
 
         Venta guardada = ventaRepository.save(venta);
 
-        // Mapeo manual a tu VentaResponseDTO
         return mapToResponseDTO(guardada);
     }
 

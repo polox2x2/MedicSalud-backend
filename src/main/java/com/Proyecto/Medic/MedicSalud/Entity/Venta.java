@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Venta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,22 +22,25 @@ public class Venta {
     @Column(nullable = false)
     private LocalDateTime fecha = LocalDateTime.now();
 
-    @ManyToOne(optional = false)         // la venta se hace en una sede
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sede_id")
     private Sede sede;
 
-    @ManyToOne(optional = true)          // opcional: asociar al paciente
+    @ManyToOne(optional = true)
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 
     @Column(nullable = false, precision = 12, scale = 2)
+    @Builder.Default
     private BigDecimal total = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @ToString.Exclude
     private List<DetalleVenta> detalles = new ArrayList<>();
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean estado = true;
 
     public void addDetalle(DetalleVenta d) {

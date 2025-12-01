@@ -14,19 +14,23 @@ import java.math.BigDecimal;
                 columnNames = {"venta_id", "medicamento_id"}
         )
 )
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
-
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DetalleVenta {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "venta_id", nullable = false)
+    @ToString.Exclude
     private Venta venta;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "medicamento_id", nullable = false)
+    @ToString.Exclude
     private Medicamento medicamento;
 
     @Min(1)

@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.Hibernate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -73,11 +74,19 @@ public class Reserva {
 
     @AssertTrue(message = "La hora de la cita debe estar dentro del horario del médico")
     public boolean isHoraDentroHorarioMedico() {
-        if (medico == null || fechaCita == null || horaCita == null) return true;
+        if (medico == null || fechaCita == null || horaCita == null) {
+            return true;
+        }
+
+        if (!Hibernate.isInitialized(medico.getHorarios())) {
+            return true;
+        }
 
         DayOfWeek dia = fechaCita.getDayOfWeek();
 
-        if (medico.getHorarios() == null || medico.getHorarios().isEmpty()) return false;
+        if (medico.getHorarios() == null || medico.getHorarios().isEmpty()) {
+            return false;
+        }
 
         return medico.getHorarios().stream()
                 .filter(h -> h.getDia() == dia)

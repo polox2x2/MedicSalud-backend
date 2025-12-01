@@ -2,9 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +12,12 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(unique = true)
@@ -26,7 +27,8 @@ public class Rol {
     //union con otra tabla
 
     @ManyToMany (mappedBy = "roles")
-    @JsonBackReference   // Ignora el "camino de vuelta"
+    @JsonBackReference
+    @ToString.Exclude
     private Set<Usuario>usuarios = new HashSet<>();
 
 

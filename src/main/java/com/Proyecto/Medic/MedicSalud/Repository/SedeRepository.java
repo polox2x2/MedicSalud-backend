@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface SedeRepository extends JpaRepository<Sede,Long> {
     Optional<Sede> findByNombreClinicaIgnoreCase(String nombreClinica);
     Optional<Sede> findByDireccionIgnoreCase(String direccion);
-
+    Optional<Sede>findByNombreClinica(String nombreClinica);
 }
