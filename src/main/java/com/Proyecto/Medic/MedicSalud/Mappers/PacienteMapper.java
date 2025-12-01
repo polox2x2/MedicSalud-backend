@@ -2,11 +2,11 @@ package com.Proyecto.Medic.MedicSalud.Mappers;
 
 
 import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteResponseDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Rol;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 
-import java.util.stream.Collectors;
 
 public class PacienteMapper {
 
@@ -32,6 +32,34 @@ public class PacienteMapper {
         }
         return dto;
     }
+    public static PacienteResponseDTO toAllDTO(Paciente paciente){
+        if (paciente == null ) return null;
+        PacienteResponseDTO dto = new PacienteResponseDTO();
+        dto.setId(paciente.getId());
+        dto.setNombreUsuario(paciente.getNombreUsuario());
+        dto.setEstado(Boolean.TRUE.equals(paciente.getEstado()));
+
+        Usuario u = paciente.getUsuario();
+        if (u != null) {
+            dto.setDni(u.getDni());
+            dto.setEmail(paciente.getUsuario().getEmail());
+            dto.setRol(seleccionarRolPrincipal(u.getRoles()));
+            dto.setTelefono(paciente.getUsuario().getTelefono());
+
+        } else {
+            dto.setDni(null);
+            dto.setRol(null);
+            dto.setEmail(null);
+            dto.setTelefono(null);
+        }
+
+        return dto;
+
+
+    }
+
+
+
 
     // De DTO → Entidad
     public static Paciente toEntity(PacienteDTO dto ) {
@@ -39,7 +67,7 @@ public class PacienteMapper {
         Paciente paciente = new Paciente();
         paciente.setId(dto.getId());
         paciente.setNombreUsuario(dto.getNombreUsuario());
-        // El usuario se debería setear desde el servicio
+
         return paciente;
 
     }

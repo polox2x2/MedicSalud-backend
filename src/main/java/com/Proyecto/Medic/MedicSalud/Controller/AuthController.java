@@ -1,5 +1,4 @@
 package com.Proyecto.Medic.MedicSalud.Controller;
-
 import com.Proyecto.Medic.MedicSalud.DTO.Auth.JwtResponseDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.Auth.LoginRequestDTO;
 import com.Proyecto.Medic.MedicSalud.Repository.UsuarioRepository;
@@ -13,9 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.Instant;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,7 +27,7 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
 
     @Value("${app.jwt.expiration-ms}")
-    private long appExpirationMs;   // <-- agrega esto
+    private long appExpirationMs;
 
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO req) {
@@ -62,10 +61,5 @@ public class AuthController {
         var roles = auth.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toSet());
         return ResponseEntity.ok(Map.of("username", auth.getName(), "roles", roles));
     }
-
-
-
-
-
 
 }

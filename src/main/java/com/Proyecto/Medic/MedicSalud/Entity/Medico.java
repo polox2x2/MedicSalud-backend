@@ -1,12 +1,14 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
+@JsonIgnoreProperties({"recetasEmitidas", "horarios", "reservas"})
 public class Medico {
 
     @Id
@@ -54,13 +56,14 @@ public class Medico {
     private Sede sede;
 
     @OneToMany(mappedBy = "medico")
+    @JsonIgnore
     private List<Receta> recetasEmitidas;
 
-
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<HorarioMedico> horarios;
 
-
     @OneToMany(mappedBy = "medico")
+    @JsonIgnore
     private List<Reserva> reservas;
 }

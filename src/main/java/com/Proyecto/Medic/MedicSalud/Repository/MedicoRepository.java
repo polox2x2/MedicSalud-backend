@@ -20,12 +20,15 @@ public interface MedicoRepository extends JpaRepository<Medico,Long> {
     List<Medico>findByEstadoTrue ();
     List<Medico>findAll();
     Optional<Medico> findByDni(Integer dni);
-
+    Optional<Medico>findByUsuario_Id(Long id);
 
     @Query("SELECT m FROM Medico m WHERE m.dni = :dni AND m.estado = true")
     Optional<Medico> buscarPorDniActivo(@Param("dni") Integer dni);
 
     @Query("SELECT m FROM Medico m WHERE m.id = :id AND m.estado = true")
     Optional<Medico> buscarPorIdActivo(@Param("id") Long id);
+
+
+
 
     }

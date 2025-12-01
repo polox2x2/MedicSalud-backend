@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteResponseDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioRequestDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
@@ -66,6 +67,10 @@ public class PacienteService {
                 .stream()
                 .map(PacienteMapper::toDTO)
                 .toList();
+    }
+    @Transactional
+    public List<PacienteResponseDTO>listaCompleta(){
+        return pacienteRepository.findAll().stream().map(PacienteMapper::toAllDTO).toList();
     }
 
 

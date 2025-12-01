@@ -2,6 +2,7 @@ package com.Proyecto.Medic.MedicSalud.Controller;
 
 
 import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteResponseDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioRequestDTO;
 import com.Proyecto.Medic.MedicSalud.Service.PacienteService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,10 @@ public class PacienteController {
                         .body("Paciente no encontrado " + dto.getDni()));
     }
 
-
+    @GetMapping("/todos")
+    public ResponseEntity<List<PacienteResponseDTO>> listarTodos(){
+        return ResponseEntity.ok(pacienteService.listaCompleta());
+    }
 
     @GetMapping("/lista")
     public ResponseEntity<List<PacienteDTO>> listarPacientes() {

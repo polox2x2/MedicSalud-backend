@@ -1,3 +1,4 @@
+
 server:
   port: 8080
 
@@ -9,13 +10,12 @@ spring:
 
   application:
     name: MedicSalud
+
   datasource:
     url: jdbc:mysql://localhost:3306/clinica_db
-
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
 
   mail:
     host: smtp.gmail.com
@@ -30,7 +30,6 @@ spring:
           starttls:
             enable: true
 
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -38,27 +37,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
-
-
-springdoc:
-  api-docs:
-    path: /api-docs        # endpoint JSON/YAML de OpenAPI
-  swagger-ui:
-    path: /swagger         # ruta de la UI ( http://localhost:8080/swagger)
-    operationsSorter: method   # ordena endpoints por metodo (GET, POST, etc.)
-    tagsSorter: alpha          # ordena tags alfabéticamente
-    display-request-duration: true   # muestra tiempo de ejecución
-    doc-expansion: none       # none | list | full
-
-app:
-  jwt:
-    secret: ${SECRET_JWT}
-    expiration-ms: 86400000
-logging:
-  level:
-    org.springframework.security: DEBUG
-    io.jsonwebtoken: DEBUG
-
 
   security:
     oauth2:
@@ -76,6 +54,32 @@ logging:
         provider:
           google:
             issuer-uri: https://accounts.google.com
+
+
+###############################################################################
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+
+app:
+  jwt:
+    secret: ${SECRET_JWT}
+    expiration-ms: 7200000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    io.jsonwebtoken: DEBUG
+
+
+############################################################################
 
 paypal:
   client-id: ${CLIENT_ID_SANDBOX}

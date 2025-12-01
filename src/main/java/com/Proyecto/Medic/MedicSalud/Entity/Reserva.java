@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -27,6 +29,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"medico"})
 public class Reserva {
 
     @Id
@@ -51,6 +54,7 @@ public class Reserva {
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "id_medico", nullable = false)
     @NotNull(message = "El médico es obligatorio")
+    @JsonIgnore
     @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Medico medico;
 

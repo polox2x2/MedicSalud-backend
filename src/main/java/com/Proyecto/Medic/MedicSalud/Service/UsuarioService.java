@@ -31,8 +31,6 @@ public class UsuarioService {
 
 
     /**
-     * Importante :
-     *
      * @Transactional -> controlar las transacciones con la base de datos, asegurando que un bloque de operaciones
      * se ejecute como una unidad completa, o que todas se reviertan si algo falla.
      */

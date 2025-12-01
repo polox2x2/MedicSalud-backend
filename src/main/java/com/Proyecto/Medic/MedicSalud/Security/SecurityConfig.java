@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.Security;
 
-;
 import com.Proyecto.Medic.MedicSalud.core.oauth2.Security.CustomOAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +28,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
     private final JwtAuthenticationFilter jwtFilter;
-
     private final CustomOAuth2SuccessHandler oAuth2SuccessHandler;
-
+    private final UserDetailsService userDetailsService; // viene de UserDetailsConfig
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,26 +38,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
-        return cfg.getAuthenticationManager();
-
-    }
-
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService uds,
-                                                         PasswordEncoder encoder) {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(uds);
-        provider.setPasswordEncoder(encoder);
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
+        return cfg.getAuthenticationManager();
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           AuthenticationProvider authenticationProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .cors(c -> {})
@@ -68,84 +59,93 @@ public class SecurityConfig {
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(e -> e.authenticationEntryPoint(
+                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
 
-                        // 1) Permitir TODOS los preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // 2) Endpoints de prueba PayPal
                         .requestMatchers("/api/paypal-test/**").permitAll()
 
-                        .requestMatchers("/oauth2/**", "/login/**", "/error").permitAll()
+                        .requestMatchers("/oauth2/**", "/login/**",
+                                "/error", "/api-docs/**", "/v3/api-docs/**").permitAll()
 
-                        //  ENDPOINTS PÚBLICOS
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/login",
                                 "/api/auth/register"
                         ).permitAll()
+
                         .requestMatchers(
                                 "/actuator/health",
                                 "/api/mail/envio"
                         ).permitAll()
+
                         .requestMatchers("/api/usuarios/crear-paciente").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reservas/lista/**").permitAll()
                         .requestMatchers("/api/recetas/**").permitAll()
 
-                        // DEBUG
                         .requestMatchers("/api/debug/**").authenticated()
 
-                        // CUALQUIER USUARIO AUTENTICADO
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
 
-                        // SOLO ADMIN
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/ventas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/medicamentos/**").hasRole("ADMIN")
 
-                        // SOLO PACIENTE
                         .requestMatchers("/api/mis-datos/**").hasRole("PACIENTE")
 
-                        // ADMIN + MEDICO
+
+                        .requestMatchers(HttpMethod.POST, "/api/historiales/**").hasRole("MEDICO")
+                        .requestMatchers(HttpMethod.PUT, "/api/historiales/**").hasRole("MEDICO")
+                        .requestMatchers(HttpMethod.DELETE, "/api/historiales/**").hasRole("MEDICO")
+
+
+                        .requestMatchers(HttpMethod.GET, "/api/historiales/**").hasAnyRole("MEDICO", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/pacientes/**")
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/pacientes/**")
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers(HttpMethod.POST,"/api/ventas").hasAnyRole("ADMIN","MEDICO")
 
-                        // reservas por paciente
                         .requestMatchers(HttpMethod.GET, "/api/reservas/**")
                         .hasAnyRole("PACIENTE", "ADMIN", "MEDICO")
 
-                        // creación de reserva del propio paciente
                         .requestMatchers(HttpMethod.POST, "/api/reservas/paciente/**")
                         .hasRole("PACIENTE")
 
-                        // horarios gestionados por admin/medico
                         .requestMatchers(HttpMethod.POST, "/api/horarios/**")
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/horarios/mis-horarios")
                         .hasAnyRole("ADMIN", "MEDICO")
 
-                        // visible para todos los roles
                         .requestMatchers(HttpMethod.GET, "/api/horarios/medico/**")
                         .hasAnyRole("ADMIN", "MEDICO", "PACIENTE")
 
-                        // CUALQUIER OTRO ENDPOINT
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authenticationProvider)
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/google")
+                        .successHandler(oAuth2SuccessHandler)
+                )
+                .formLogin(form -> form.disable())
+                .logout(logout -> logout.disable())
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200","http://localhost:5500", "http://127.0.0.1:5500"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500",
+                "https://medicsalud-clinic.web.app/",
+                "https://medicsalud-clinic.web.app/"
+        ));
         config.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
