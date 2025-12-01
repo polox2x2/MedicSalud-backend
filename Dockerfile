@@ -1,24 +1,30 @@
-# Etapa 1: Construcción del JAR con Maven
-FROM maven:3.9.5-eclipse-temurin-17 as build
-
+# =========================
+# Etapa 1: Build con Maven
+# =========================
+FROM maven:3.9.5-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copiar el contenido del proyecto
-COPY . .
+# Copiamos pom y código
+COPY pom.xml .
+COPY src ./src
 
-# Construir el proyecto y generar el JAR
-RUN mvn clean package -DskipTests
+# Construimos el JAR (sin tests)
+RUN mvn -q -DskipTests package
 
-# Etapa 2: Imagen ligera con solo el JDK
-FROM openjdk:17-jdk-slim
-
+# =========================
+# Etapa 2: Runtime
+# =========================
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copiar el JAR desde la etapa anterior
+# ffmpeg, si lo necesitas
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
+# Copiamos el jar generado en la etapa anterior
 COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto
+# Render usa PORT
+ENV PORT=8080
 EXPOSE 8080
 
-# Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "/app/app.jar"]
