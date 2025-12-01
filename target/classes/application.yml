@@ -1,0 +1,88 @@
+
+server:
+  port: ${PORT:8080}
+
+spring:
+  profiles:
+    active: dev
+  config:
+    import: optional:file:.env.properties[.properties]
+
+  application:
+    name: MedicSalud
+
+  datasource:
+    url: jdbc:postgresql://db.wjmvwlmcrmwvmpkptllh.supabase.co:5432/postgres?sslmode=require
+    username: postgres
+    password: 'uD0[a%D64`:l1&lJ'
+    driver-class-name: org.postgresql.Driver
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+
+###############################################################################
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+
+app:
+  jwt:
+    secret: ${SECRET_JWT}
+    expiration-ms: 7200000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    io.jsonwebtoken: DEBUG
+
+
+############################################################################
+
+paypal:
+  client-id: ${CLIENT_ID_SANDBOX}
+  client-secret: ${CLIENT_SECRET_SANDBOX}
+  mode: sandbox
