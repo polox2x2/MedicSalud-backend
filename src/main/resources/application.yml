@@ -3,8 +3,7 @@ server:
   port: ${PORT:8080}
 
 spring:
-  profiles:
-    active: dev
+
   config:
     import: optional:file:.env.properties[.properties]
 
@@ -12,9 +11,9 @@ spring:
     name: MedicSalud
 
   datasource:
-    url: jdbc:postgresql://ep-floral-sound-adx5trud-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
-    username: neondb_owner
-    password: npg_0xl5EhiLIZvn
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
 
