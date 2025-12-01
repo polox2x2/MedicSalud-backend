@@ -7,6 +7,9 @@ WORKDIR /app
 COPY mvnw pom.xml ./
 COPY .mvn .mvn
 
+# Dar permisos de ejecución al wrapper (importante en Windows)
+RUN chmod +x mvnw
+
 # Descargar dependencias para aprovechar cache
 RUN ./mvnw -q -DskipTests dependency:go-offline
 
@@ -25,7 +28,7 @@ WORKDIR /app
 # Copiar el jar generado
 COPY --from=build /app/target/*.jar app.jar
 
-# Puerto expuesto (cambia si tu app usa otro)
+# Puerto expuesto
 EXPOSE 8080
 
 # Comando de arranque
