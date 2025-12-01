@@ -12,9 +12,9 @@ spring:
     name: MedicSalud
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://b4uoq0rshdc6ogtoeymt-mysql.services.clever-cloud.com:3306/b4uoq0rshdc6ogtoeymt
+    username: uuhwblprjqiupwbx
+    password: h0qjyL8ufIoKlvwMJWLJ
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
