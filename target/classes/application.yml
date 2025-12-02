@@ -1,6 +1,6 @@
 
 server:
-  port: ${PORT:8080}
+  port: 8080
 
 spring:
   profiles:
@@ -12,11 +12,10 @@ spring:
     name: MedicSalud
 
   datasource:
-    url: jdbc:postgresql://ep-floral-sound-adx5trud-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
-    username: neondb_owner
-    password: npg_0xl5EhiLIZvn
-    driver-class-name: org.postgresql.Driver
-
+    url: jdbc:mysql://localhost:3306/clinica_db
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
     host: smtp.gmail.com
@@ -33,10 +32,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
   security:
@@ -72,7 +71,7 @@ springdoc:
 app:
   jwt:
     secret: ${SECRET_JWT}
-    expiration-ms: 7200000
+    expiration-ms: 86400000
 
 logging:
   level:

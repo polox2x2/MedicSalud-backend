@@ -1,6 +1,7 @@
 package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaPacienteDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
@@ -26,6 +27,77 @@ public class ReservaService {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
     private final SedeRepository sedeRepository;
+
+    @Transactional
+    public ReservaResponseDTO  crearReservaPaciente(CrearReservaPacienteDTO req) {
+
+        Paciente paciente = resolvePacienteFromToken();
+
+
+        Medico medico = medicoRepository.buscarPorDniActivo(req.getMedicoDni())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Médico no encontrado con DNI: " + req.getMedicoDni()
+                ));
+
+        Sede sede = sedeRepository.findById(req.getSedeId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Sede no encontrada con id: " + req.getSedeId()
+                ));
+
+
+        boolean ocupado = reservaRepository
+                .existsByMedico_IdAndFechaCitaAndHoraCitaAndEstadoCitaTrue(
+                        medico.getId(),
+                        req.getFechaCita(),
+                        req.getHoraCita()
+                );
+
+        if (ocupado) {
+            throw new IllegalStateException("El médico ya tiene una cita en esa fecha y hora");
+        }
+
+        // Crear reserva
+        Reserva r = new Reserva();
+        r.setPaciente(paciente);
+        r.setMedico(medico);
+        r.setSede(sede);
+        r.setFechaCita(req.getFechaCita());
+        r.setHoraCita(req.getHoraCita());
+        r.setEstadoCita(true);
+        r.setFechaCreacion(LocalDateTime.now());
+
+        Reserva reserva = reservaRepository.save(r);
+
+        return new ReservaResponseDTO(
+                reserva.getId(),
+                reserva.getPaciente().getNombreUsuario(),
+                reserva.getPaciente().getDni(),
+                (reserva.getMedico() != null && reserva.getMedico().getUsuario() != null)
+                        ? reserva.getMedico().getUsuario().getNombre()
+                        : "Médico eliminado",
+                reserva.getMedico() != null ? reserva.getMedico().getDni() : null,
+                reserva.getSede() != null ? reserva.getSede().getNombreClinica() : null,
+                reserva.getFechaCreacion(),
+                reserva.getFechaCita(),
+                reserva.getHoraCita(),
+                reserva.getEstadoCita()
+        );
+    }
+
+    // Helper para paciente desde el token (usado solo por crearReservaPaciente)
+    private Paciente resolvePacienteFromToken() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return pacienteRepository.findByUsuario_Email(email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Paciente no encontrado (token): " + email
+                ));
+
+
+    }
+
 
     @Transactional
     public Reserva crearReserva(CrearReservaDTO req) {

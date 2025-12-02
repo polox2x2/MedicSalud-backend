@@ -17,7 +17,8 @@ public class HorarioMedicoMapper {
                 h.getId(),
                 h.getDia().name(),
                 h.getHoraInicio().toString(),
-                h.getHoraFin().toString()
+                h.getHoraFin().toString(),
+                h.getMedico().getDni().toString()
         );
     }
     public static HorarioMedico toEntity(CrearHorarioRequestDTO dto, Medico medico) {

@@ -13,4 +13,5 @@ public class HorarioResponseDTO {
     private String dia;
     private String horaInicio;
     private String horaFin;
+    private String medicoDni;
 }

@@ -1,7 +1,9 @@
 package com.Proyecto.Medic.MedicSalud.Controller;
 
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.CrearReservaPacienteDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO.ReservaResponseDTO;
+import com.Proyecto.Medic.MedicSalud.Entity.Reserva;
 import com.Proyecto.Medic.MedicSalud.Mappers.ReservaMapper;
 import com.Proyecto.Medic.MedicSalud.Service.ReservaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,19 @@ public class ReservaController {
                     @ApiResponse(responseCode = "409", description = "Médico ocupado en esa fecha/hora")
             }
     )
+    @PostMapping("/paciente")
+    public ResponseEntity<?> crearReservaPaciente(
+            @RequestBody CrearReservaPacienteDTO dto
+    ) {
+        try {
+            ReservaResponseDTO response = reservaService.crearReservaPaciente(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     @PostMapping("/crear")
     public ResponseEntity<ReservaResponseDTO> crear(
             @Valid @RequestBody CrearReservaDTO req

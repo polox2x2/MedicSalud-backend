@@ -46,6 +46,17 @@ public interface RecetaRepository  extends JpaRepository<Receta, Long> {
 
     List<Receta> findByMedico_Dni(Integer dni);
 
-
+    @Query("""
+    SELECT r
+    FROM Receta r
+    JOIN FETCH r.paciente p
+    JOIN FETCH p.usuario pu
+    JOIN FETCH r.medico m
+    JOIN FETCH m.usuario mu
+    JOIN FETCH r.medicamento med
+    WHERE pu.email = :email
+      AND r.estado = true
+""")
+    List<Receta> findByPacienteUsuarioEmailConTodo(@Param("email") String email);
 
 }
