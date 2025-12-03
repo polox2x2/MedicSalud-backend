@@ -12,9 +12,9 @@ spring:
     name: MedicSalud
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://mysql-bddi.railway.internal:3306/railway?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: ROOT
+    password: wTThZTPoRwPcBmwCBtOvFJWMCJfhSRLm
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
