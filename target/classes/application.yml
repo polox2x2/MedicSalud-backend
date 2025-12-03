@@ -70,7 +70,7 @@ springdoc:
 
 app:
   jwt:
-    secret: ${SECRET_JWT}
+    secret: ${SECRET_JWT:default-secret}
     expiration-ms: 86400000
 
 logging:
