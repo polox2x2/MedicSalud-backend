@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -40,40 +39,32 @@ public class HorarioMedicoInitializer implements CommandLineRunner {
             throw new IllegalStateException("No existen médicos para asignar horarios.");
         }
 
+        java.time.LocalDate today = java.time.LocalDate.now();
+
         for (Medico medico : medicos) {
 
-            // Lunes
-            saveHorario(medico, DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(13, 0));
-            saveHorario(medico, DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(18, 0));
+            for (int i = 0; i < 7; i++) {
+                java.time.LocalDate fecha = today.plusDays(i);
 
-            // Martes
-            saveHorario(medico, DayOfWeek.TUESDAY, LocalTime.of(9, 0), LocalTime.of(13, 0));
-            saveHorario(medico, DayOfWeek.TUESDAY, LocalTime.of(15, 0), LocalTime.of(19, 0));
 
-            // Miércoles
-            saveHorario(medico, DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(12, 0));
-            saveHorario(medico, DayOfWeek.WEDNESDAY, LocalTime.of(14, 0), LocalTime.of(17, 0));
+                saveHorario(medico, fecha, LocalTime.of(8, 0), LocalTime.of(13, 0));
 
-            // Jueves
-            saveHorario(medico, DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(14, 0));
-            saveHorario(medico, DayOfWeek.THURSDAY, LocalTime.of(16, 0), LocalTime.of(20, 0));
 
-            // Viernes
-            saveHorario(medico, DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(12, 0));
-            saveHorario(medico, DayOfWeek.FRIDAY, LocalTime.of(13, 0), LocalTime.of(17, 0));
+                saveHorario(medico, fecha, LocalTime.of(14, 0), LocalTime.of(18, 0));
+            }
         }
 
         log.info(">>> Horarios médicos inicializados correctamente.");
     }
 
-    private void saveHorario(Medico medico, DayOfWeek dia, LocalTime inicio, LocalTime fin) {
+    private void saveHorario(Medico medico, java.time.LocalDate fecha, LocalTime inicio, LocalTime fin) {
         horarioMedicoRepository.save(
                 HorarioMedico.builder()
-                        .dia(dia)
+                        .fecha(fecha)
                         .horaInicio(inicio)
                         .horaFin(fin)
                         .medico(medico)
-                        .build()
-        );
+                        .activo(true)
+                        .build());
     }
 }

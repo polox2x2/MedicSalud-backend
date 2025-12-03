@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.Controller;
 
-
 import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.ActualizarRecetaRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.CrearRecetaRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.RecetaDTO.RecetaResponseDTO;
@@ -40,7 +39,6 @@ public class RecetaController {
         return ResponseEntity.ok(recetaService.listarPorMedico(medicoId));
     }
 
-
     @GetMapping("/paciente/dni/{dni}")
     public ResponseEntity<List<RecetaResponseDTO>> recetasPorPacienteDni(
             @PathVariable Integer dni) {
@@ -53,7 +51,6 @@ public class RecetaController {
         return ResponseEntity.ok(recetaService.listarPorMedicoDni(dni));
     }
 
-
     @GetMapping("/paciente/me")
     public ResponseEntity<List<RecetaResponseDTO>> recetasPacienteActual() {
         return ResponseEntity.ok(recetaService.listarRecetasPacienteActual());
@@ -63,7 +60,6 @@ public class RecetaController {
     public ResponseEntity<List<RecetaResponseDTO>> recetasMedicoActual() {
         return ResponseEntity.ok(recetaService.listarRecetasMedicoActual());
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<RecetaResponseDTO> actualizarReceta(
@@ -79,4 +75,3 @@ public class RecetaController {
         return ResponseEntity.noContent().build();
     }
 }
-

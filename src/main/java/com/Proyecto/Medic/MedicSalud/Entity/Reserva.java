@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
@@ -14,24 +13,17 @@ import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.Hibernate;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(
-        name = "reservas",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_reserva_medico_fecha_hora",
-                columnNames = {"id_medico", "fecha_cita", "hora_cita"}
-        )
-)
+@Table(name = "reservas")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIgnoreProperties({"medico"})
+@JsonIgnoreProperties({ "medico" })
 public class Reserva {
 
     @Id
@@ -50,8 +42,13 @@ public class Reserva {
     private LocalTime horaCita;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "estado_cita")
-    private Boolean estadoCita = true;
+    private EstadoCita estadoCita = EstadoCita.PENDIENTE;
+
+    @Builder.Default
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "id_medico", nullable = false)
@@ -70,6 +67,10 @@ public class Reserva {
     @NotNull(message = "El paciente es obligatorio")
     private Paciente paciente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_horario_medico")
+    private HorarioMedico horarioMedico;
+
     @Version
     private Long version;
 
@@ -83,17 +84,13 @@ public class Reserva {
             return true;
         }
 
-        DayOfWeek dia = fechaCita.getDayOfWeek();
-
         if (medico.getHorarios() == null || medico.getHorarios().isEmpty()) {
             return false;
         }
 
         return medico.getHorarios().stream()
-                .filter(h -> h.getDia() == dia)
-                .anyMatch(h ->
-                        !horaCita.isBefore(h.getHoraInicio()) &&
-                                !horaCita.isAfter(h.getHoraFin())
-                );
+                .filter(h -> h.getFecha().equals(fechaCita))
+                .anyMatch(h -> !horaCita.isBefore(h.getHoraInicio()) &&
+                        !horaCita.isAfter(h.getHoraFin()));
     }
 }

@@ -2,8 +2,8 @@ package com.Proyecto.Medic.MedicSalud.Service;
 
 import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacienteResponseDTO;
-import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioRequestDTO;
+import com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO.UsuarioUpDateDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Paciente;
 import com.Proyecto.Medic.MedicSalud.Entity.Usuario;
 import com.Proyecto.Medic.MedicSalud.Mappers.PacienteMapper;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,6 @@ public class PacienteService {
 
     private final PacienteRepository pacienteRepository;
     private final UsuarioRepository usuarioRepository;
-
 
     public PacienteDTO crearPacienteDesdeUsuarioDTO(UsuarioRequestDTO usuarioDTO) {
 
@@ -68,11 +66,11 @@ public class PacienteService {
                 .map(PacienteMapper::toDTO)
                 .toList();
     }
+
     @Transactional
-    public List<PacienteResponseDTO>listaCompleta(){
+    public List<PacienteResponseDTO> listaCompleta() {
         return pacienteRepository.findAll().stream().map(PacienteMapper::toAllDTO).toList();
     }
-
 
     public PacienteDTO buscarPorId(Long id) {
         return pacienteRepository.findByIdConUsuario(id)
@@ -97,8 +95,72 @@ public class PacienteService {
         return PacienteMapper.toDTO(guardado);
     }
 
-    public void eliminar(Long id) {
-        pacienteRepository.deleteById(id);
+    public void eliminarLogicoPorDni(Integer dni) {
+        Usuario usuario = usuarioRepository.findByDni(dni)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con DNI: " + dni));
+
+        Paciente paciente = pacienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado para el usuario con DNI: " + dni));
+
+        usuario.setEstado(false);
+        paciente.setEstado(false);
+
+        usuarioRepository.save(usuario);
+        pacienteRepository.save(paciente);
+    }
+
+    public PacienteDTO actualizarPaciente(Long id, UsuarioUpDateDTO dto) {
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+
+        Usuario usuario = paciente.getUsuario();
+
+        actualizarDatosUsuario(usuario, dto);
+
+        return PacienteMapper.toDTO(paciente);
+    }
+
+    public PacienteDTO actualizarPacientePorEmail(String email, UsuarioUpDateDTO dto) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Paciente paciente = pacienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado para este usuario"));
+
+        actualizarDatosUsuario(usuario, dto);
+
+        // Sincronizar nombreUsuario en Paciente si cambió el nombre
+        if (dto.getNombre() != null || dto.getApellido() != null) {
+            paciente.setNombreUsuario(usuario.getNombre() + " " + usuario.getApellido());
+            pacienteRepository.save(paciente);
+        }
+
+        return PacienteMapper.toDTO(paciente);
+    }
+
+    public com.Proyecto.Medic.MedicSalud.DTO.PacienteDTO.PacientePerfilDTO obtenerMiPerfil(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Paciente paciente = pacienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado para este usuario"));
+
+        return PacienteMapper.toPerfilDTO(paciente);
+    }
+
+    private void actualizarDatosUsuario(Usuario usuario, UsuarioUpDateDTO dto) {
+        if (dto.getNombre() != null)
+            usuario.setNombre(dto.getNombre());
+        if (dto.getApellido() != null)
+            usuario.setApellido(dto.getApellido());
+        if (dto.getEmail() != null)
+            usuario.setEmail(dto.getEmail());
+        if (dto.getTelefono() != null)
+            usuario.setTelefono(dto.getTelefono());
+        if (dto.getDireccion() != null)
+            usuario.setDireccion(dto.getDireccion());
+
+        usuarioRepository.save(usuario);
     }
 
 }

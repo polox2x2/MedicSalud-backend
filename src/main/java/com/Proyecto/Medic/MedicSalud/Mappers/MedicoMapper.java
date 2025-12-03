@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.Mappers;
 
-
 import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.MedicoRequestDTO;
 import com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO.RegistroMedicoDTO;
 import com.Proyecto.Medic.MedicSalud.Entity.Medico;
@@ -31,15 +30,14 @@ public class MedicoMapper {
                 .build();
     }
 
-    public static MedicoRequestDTO listaMedicoDTO (Medico medico){
+    public static MedicoRequestDTO listaMedicoDTO(Medico medico) {
         return MedicoRequestDTO.builder()
                 .id(medico.getId())
                 .nombre(medico.getUsuario().getNombre() + medico.getUsuario().getApellido())
                 .correo(medico.getUsuario().getEmail())
                 .dni(medico.getUsuario().getDni())
                 .especialidad(medico.getEspecialidad())
+                .telefono(medico.getTelefono())
                 .build();
     }
 }
-
-

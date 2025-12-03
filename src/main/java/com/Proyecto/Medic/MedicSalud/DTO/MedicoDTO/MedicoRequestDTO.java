@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.DTO.MedicoDTO;
 
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,6 @@ public class MedicoRequestDTO {
         private String correo;
         private Integer dni;
         private String sede;
-
-
+        private String telefono;
 
 }

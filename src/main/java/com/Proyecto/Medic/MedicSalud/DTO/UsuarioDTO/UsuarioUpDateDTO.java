@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.DTO.UsuarioDTO;
 
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +9,8 @@ public class UsuarioUpDateDTO {
 
     private String nombre;
     private String apellido;
-    private  String email;
+    private String email;
+    private String telefono;
+    private String direccion;
     private byte[] fotoPerfil;
 }

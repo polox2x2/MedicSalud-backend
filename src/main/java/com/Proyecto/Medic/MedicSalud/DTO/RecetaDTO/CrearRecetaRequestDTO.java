@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class CrearRecetaRequestDTO {
 
-
     @NotNull(message = "El id del paciente es obligatorio")
     private Long pacienteId;
 

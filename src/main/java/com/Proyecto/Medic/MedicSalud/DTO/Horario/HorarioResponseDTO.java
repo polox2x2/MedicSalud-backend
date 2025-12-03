@@ -10,8 +10,9 @@ import lombok.*;
 public class HorarioResponseDTO {
 
     private Long id;
-    private String dia;
+    private java.time.LocalDate fecha;
     private String horaInicio;
     private String horaFin;
     private String medicoDni;
+    private String estado;
 }

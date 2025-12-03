@@ -11,20 +11,21 @@ public class ReservaMapper {
 
     // Entidad → DTO de respuesta
     public static ReservaResponseDTO toResponse(Reserva r) {
-        if (r == null) return null;
+        if (r == null)
+            return null;
 
         String nombrePaciente = null;
-        String nombreMedico   = null;
-        String nombreSede     = null;
+        String nombreMedico = null;
+        String nombreSede = null;
 
         Integer pacienteDni = null;
-        Integer medicoDni   = null;
+        Integer medicoDni = null;
 
         // Paciente
         Paciente p = r.getPaciente();
         if (p != null) {
             nombrePaciente = p.getNombreUsuario();
-            pacienteDni    = p.getDni();
+            pacienteDni = p.getDni();
         }
 
         // Médico
@@ -53,12 +54,14 @@ public class ReservaMapper {
                 .fechaCita(r.getFechaCita())
                 .horaCita(r.getHoraCita())
                 .estadoCita(r.getEstadoCita())
+                .estado(r.getEstado())
                 .build();
     }
 
     // DTO crear → Entidad
     public static Reserva toEntityFromCrear(CrearReservaDTO dto) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
 
         Reserva r = new Reserva();
         r.setFechaCita(dto.getFechaCita());

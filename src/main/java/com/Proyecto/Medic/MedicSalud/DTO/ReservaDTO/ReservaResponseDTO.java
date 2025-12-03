@@ -1,5 +1,6 @@
 package com.Proyecto.Medic.MedicSalud.DTO.ReservaDTO;
 
+import com.Proyecto.Medic.MedicSalud.Entity.EstadoCita;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -27,21 +28,21 @@ public class ReservaResponseDTO {
         private LocalDate fechaCita;
         private LocalTime horaCita;
 
-        private Boolean estadoCita;
-
+        private EstadoCita estadoCita;
+        private Boolean estado;
 
         public ReservaResponseDTO(
-                Long id,
-                String nombrePaciente,
-                Integer pacienteDni,
-                String nombreMedico,
-                Integer medicoDni,
-                String nombreSede,
-                LocalDateTime fechaCreacion,
-                LocalDate fechaCita,
-                LocalTime horaCita,
-                Boolean estadoCita
-        ) {
+                        Long id,
+                        String nombrePaciente,
+                        Integer pacienteDni,
+                        String nombreMedico,
+                        Integer medicoDni,
+                        String nombreSede,
+                        LocalDateTime fechaCreacion,
+                        LocalDate fechaCita,
+                        LocalTime horaCita,
+                        EstadoCita estadoCita,
+                        Boolean estado) {
                 this.id = id;
                 this.nombrePaciente = nombrePaciente;
                 this.pacienteDni = pacienteDni;
@@ -52,8 +53,9 @@ public class ReservaResponseDTO {
                 this.fechaCita = fechaCita;
                 this.horaCita = horaCita;
                 this.estadoCita = estadoCita;
+                this.estado = estado;
         }
 
-
-        public ReservaResponseDTO() {}
+        public ReservaResponseDTO() {
+        }
 }

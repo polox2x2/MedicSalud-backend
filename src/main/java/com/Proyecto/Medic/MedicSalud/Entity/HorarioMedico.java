@@ -1,6 +1,5 @@
 package com.Proyecto.Medic.MedicSalud.Entity;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -24,9 +22,8 @@ public class HorarioMedico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "El día es obligatorio")
-    private DayOfWeek dia;
+    @NotNull(message = "La fecha es obligatoria")
+    private java.time.LocalDate fecha;
 
     @NotNull(message = "La hora de inicio es obligatoria")
     private LocalTime horaInicio;
@@ -39,10 +36,16 @@ public class HorarioMedico {
     @NotNull(message = "Debe pertenecer a un médico")
     private Medico medico;
 
+    @Builder.Default
+    private Boolean activo = true;
+
+    @OneToMany(mappedBy = "horarioMedico", fetch = FetchType.LAZY)
+    private java.util.List<Reserva> reservas;
 
     @AssertTrue(message = "La hora fin debe ser mayor que la hora inicio")
     public boolean isIntervaloValido() {
-        if (horaInicio == null || horaFin == null) return true;
+        if (horaInicio == null || horaFin == null)
+            return true;
         return horaFin.isAfter(horaInicio);
     }
 

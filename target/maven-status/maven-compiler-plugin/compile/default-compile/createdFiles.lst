@@ -22,6 +22,7 @@ com\Proyecto\Medic\MedicSalud\DTO\HistorialDTO\ActualizarHistorialRequestDTO.cla
 com\Proyecto\Medic\MedicSalud\Mappers\UsuarioMappers.class
 com\Proyecto\Medic\MedicSalud\core\Init\RoleInitializer.class
 com\Proyecto\Medic\MedicSalud\DTO\Venta\CompraStockDTO.class
+com\Proyecto\Medic\MedicSalud\DTO\ReservaDTO\CrearReservaPacienteDTO.class
 com\Proyecto\Medic\MedicSalud\Entity\Medico$MedicoBuilder.class
 com\Proyecto\Medic\MedicSalud\Entity\Venta.class
 com\Proyecto\Medic\MedicSalud\core\Paypal\Service\PayPalService.class
@@ -50,6 +51,7 @@ com\Proyecto\Medic\MedicSalud\Mappers\MedicamentoMapper.class
 com\Proyecto\Medic\MedicSalud\Security\SecurityConfig.class
 com\Proyecto\Medic\MedicSalud\core\Paypal\dto\CrearOrdenResponse.class
 com\Proyecto\Medic\MedicSalud\Controller\VentaController.class
+com\Proyecto\Medic\MedicSalud\DTO\ReservaDTO\ReprogramarReservaDTO.class
 com\Proyecto\Medic\MedicSalud\core\Paypal\Model\Paypal$PaypalBuilder.class
 com\Proyecto\Medic\MedicSalud\DTO\Horario\HorarioResponseDTO$HorarioResponseDTOBuilder.class
 com\Proyecto\Medic\MedicSalud\core\Init\RecetaInitializer.class
@@ -75,6 +77,7 @@ com\Proyecto\Medic\MedicSalud\core\Init\UserInitializer.class
 com\Proyecto\Medic\MedicSalud\Repository\VentaRepository.class
 com\Proyecto\Medic\MedicSalud\DTO\InventarioDTO\InventarioAgregarRequestDTO.class
 com\Proyecto\Medic\MedicSalud\Entity\Reserva$ReservaBuilder.class
+com\Proyecto\Medic\MedicSalud\DTO\PacienteDTO\PacientePerfilDTO$PacientePerfilDTOBuilder.class
 com\Proyecto\Medic\MedicSalud\Repository\DetalleVentaRepository.class
 com\Proyecto\Medic\MedicSalud\DTO\MedicamentoDTO\MedicamentoUpdateDTO.class
 com\Proyecto\Medic\MedicSalud\core\Init\MedicamentoInitializer.class
@@ -98,6 +101,7 @@ com\Proyecto\Medic\MedicSalud\Entity\Paciente$PacienteBuilder.class
 com\Proyecto\Medic\MedicSalud\core\Init\MedicoInitializer.class
 com\Proyecto\Medic\MedicSalud\core\Paypal\Controller\PagoController.class
 com\Proyecto\Medic\MedicSalud\DTO\UsuarioDTO\RegistroUsuarioDTO$RegistroUsuarioDTOBuilder.class
+com\Proyecto\Medic\MedicSalud\DTO\PacienteDTO\PacientePerfilDTO.class
 com\Proyecto\Medic\MedicSalud\Entity\Inventario.class
 com\Proyecto\Medic\MedicSalud\Service\MedicoService.class
 com\Proyecto\Medic\MedicSalud\Controller\AuthController.class
@@ -107,6 +111,7 @@ com\Proyecto\Medic\MedicSalud\Repository\UsuarioRepository.class
 com\Proyecto\Medic\MedicSalud\Entity\Medicamento$MedicamentoBuilder.class
 com\Proyecto\Medic\MedicSalud\DTO\Horario\CrearHorarioRequestDTO.class
 com\Proyecto\Medic\MedicSalud\DTO\Horario\HorarioResponseDTO.class
+com\Proyecto\Medic\MedicSalud\DTO\MedicoDTO\ActualizarMedicoDTO.class
 com\Proyecto\Medic\MedicSalud\Entity\Inventario$InventarioBuilder.class
 com\Proyecto\Medic\MedicSalud\Service\MedicamentoService.class
 com\Proyecto\Medic\MedicSalud\Entity\Receta$RecetaBuilder.class
@@ -132,6 +137,7 @@ com\Proyecto\Medic\MedicSalud\Entity\Medicamento.class
 com\Proyecto\Medic\MedicSalud\DTO\MedicamentoDTO\MedicamentoResponseDTO.class
 com\Proyecto\Medic\MedicSalud\Entity\HorarioMedico.class
 com\Proyecto\Medic\MedicSalud\DTO\Auth\JwtResponseDTO.class
+com\Proyecto\Medic\MedicSalud\Entity\EstadoCita.class
 com\Proyecto\Medic\MedicSalud\Controller\PacienteController.class
 com\Proyecto\Medic\MedicSalud\DTO\RecetaDTO\RecetaResponseDTO$RecetaResponseDTOBuilder.class
 com\Proyecto\Medic\MedicSalud\Service\VentaService.class
